@@ -53,3 +53,11 @@ std::cout << "pet name: " << smart_enum::to_string(pet_cat) << std::endl;
 std::cout << "pet name: " << smart_enum::to_string(pet_lion) << std::endl;
 //pet name: Lion
 ```
+
+It is possible get descriptions for smart enum values:
+```c++
+    std::cout << "descr.: " << smart_enum::get_description(pet_dog) << std::endl;
+    //descr.: dog_description
+    std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
+    //descr.: hOrse
+```
