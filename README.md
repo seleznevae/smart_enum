@@ -25,6 +25,7 @@ declaration and user will not need to repeat enum elements.
 
 ## Examples
 
+Declaration of smart enum looks like this:
 ```c++
 #include "smart_enum.h"
 
@@ -36,4 +37,19 @@ SMART_ENUM(Animal, int) {
     SM_ENUM_ELEM(Lion,   5);
     SM_ENUM_ELEM(Horse,  10,  "hOrse");
 };
+```
+Declaring variables:
+```c++
+    Animal pet_cat   = Animal::Cat;
+    Animal pet_dog   = Animal::Dog;
+    Animal pet_lion  = Animal::Lion;
+    Animal pet_horse = Animal::Horse;
+```
+
+It is possible to convert smart enums to strings:
+```c++
+std::cout << "pet name: " << smart_enum::to_string(pet_cat) << std::endl;
+//pet name: cat
+std::cout << "pet name: " << smart_enum::to_string(pet_lion) << std::endl;
+//pet name: Lion
 ```
