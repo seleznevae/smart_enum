@@ -1,20 +1,34 @@
-language: cpp
+dist: trusty
+sudo: required
 
+language:
+  - cpp
+  
 compiler:
   - gcc
   
-  
-addons: 
-  apt: 
-     - sources: llvm-toolchain-precise-3.6"
-     - packages: gcc-6
-  
-os: 
-  - linux
-  
-dist: xenial
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-6
+      - g++-6
+
+script:
+  # Link gcc-6 and g++-6 to their standard commands
+  - ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
+  - ln -s /usr/bin/g++-6 /usr/local/bin/g++
+  # Export CC and CXX to tell cmake which compiler to use
+  - export CC=/usr/bin/gcc-6
+  - export CXX=/usr/bin/g++-6
+  # Check versions of gcc, g++ and cmake
+  - gcc -v && g++ -v 
+  # Run your build commands next
 
 script:
   - g++ --version
   - make test
   - ./bin/test_smart_enum
+
+
