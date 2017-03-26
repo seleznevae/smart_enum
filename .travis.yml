@@ -6,7 +6,7 @@ compiler:
 os: 
   - linux
   
-dist: zesty
+dist: xenial
 
 script: 
   - make test
