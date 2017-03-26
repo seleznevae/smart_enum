@@ -21,3 +21,19 @@ DECLARE_ENUM(Animal, Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse);
 ```
 This code violates **DRY** (don't repeat yourself) principle. The aim of **smart enum** library to give macros that can be use in enum
 declaration and user will not need to repeat enum elements.
+
+
+## Examples
+
+```c++
+#include "smart_enum.h"
+
+SMART_ENUM(Animal, int) {
+    INITIALIZE_SMART_ENUM;
+
+    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
+    SM_ENUM_ELEM(Cat,    2,  "cat"  );
+    SM_ENUM_ELEM(Lion,   5);
+    SM_ENUM_ELEM(Horse,  10,  "hOrse");
+};
+```
