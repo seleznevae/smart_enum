@@ -42,7 +42,7 @@ SMART_ENUM(Animal, int) {
     SM_ENUM_ELEM(Horse,  10,  "hOrse");
 };
 ```
-Declaring variables:
+Definitions of variables:
 ```c++
 Animal pet_cat   = Animal::Cat;
 Animal pet_dog   = Animal::Dog;
