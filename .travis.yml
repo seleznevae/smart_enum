@@ -6,7 +6,7 @@ compiler:
 os: 
   - linux
   
-dist: trusty
+dist: zesty
 
 script: 
   - make test
