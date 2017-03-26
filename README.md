@@ -80,7 +80,7 @@ switch (pet_cat) {
          break;
  }
 ```
-It is possible got get information about number of elements declared in smart enum:
+It is possible to get information about number of elements declared in smart enum:
 ```c++
 std::cout << "Elements in smart enum: " << smart_enum::enum_size<Animal>() << std::endl;
 //Elements in smart enum: 4
