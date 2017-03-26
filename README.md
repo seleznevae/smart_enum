@@ -92,4 +92,4 @@ Animal invalid;
 assert(smart_enum::check(invalid) == false);
 ```
 ## License
-WTFPL
+WTFPL 
