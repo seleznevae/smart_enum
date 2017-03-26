@@ -4,7 +4,7 @@
 ERROR_CHECKING_POLICY = #-Werror
 
 CC            = gcc
-CXX           = g++
+CXX           = g++6
 DEFINES       =
 CFLAGS        = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(ERROR_CHECKING_POLICY) $(DEFINES) 
 CXXFLAGS      = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(ERROR_CHECKING_POLICY) -std=c++14 $(DEFINES)
