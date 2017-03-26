@@ -19,6 +19,7 @@ script:
   - g++-6 -v 
   - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
   - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
+  - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++-6
   # Export CC and CXX to tell cmake which compiler to use
   - export CC=/usr/bin/gcc-6
   - export CXX=/usr/bin/g++-6
