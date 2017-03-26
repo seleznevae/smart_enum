@@ -1,4 +1,7 @@
 # Smart enum
+- [Design goals](#design-goals)
+- [Examples](#examples)
+
 Smart enum - short test library for smart enums in C++.
 Implementation is based on materials for [SMETA](http://b.atch.se/posts/constexpr-meta-container/attachments/stateful_meta_container-poc.cpp) (stateful meta-programming library) by Filip Roséen  	filip.roseen@gmail.com.
 
@@ -62,7 +65,7 @@ std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
 //descr.: hOrse
 ```
 
-Smart enums can be use in switch statements like ordinal enums:
+Smart enums can be used in switch statements like ordinal enums:
 ```c++
 switch (pet_cat) {
      case Animal::Cat:
@@ -82,7 +85,7 @@ std::cout << "Elements in smart enum: " << smart_enum::enum_size<Animal>() << st
 //Elements in smart enum: 4
 ```
 
-It is possible got get information about number of elements declared in smart enum:
+It is possible to get information about number of elements declared in smart enum:
 ```c++
 Animal invalid;
 *(reinterpret_cast<int*>(&invalid)) = 6666;
