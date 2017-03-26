@@ -10,7 +10,7 @@ So **it's not recommended to use this library in your production code**. **This 
 
 ## Design goals
 
-C++ doesn't have reflection. It is a common technique to use macros to add compile time inforamtion about enumeration like the following:
+C++ doesn't have reflection. It is a common technique to use macros to add compile time information about enumeration like the following:
 
 ```c++
 enum class Animal {
