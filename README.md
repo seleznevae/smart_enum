@@ -91,3 +91,5 @@ Animal invalid;
 *(reinterpret_cast<int*>(&invalid)) = 6666;
 assert(smart_enum::check(invalid) == false);
 ```
+## License
+WTFPL
