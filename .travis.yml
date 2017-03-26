@@ -7,3 +7,7 @@ os:
   - linux
   
 dist: trusty
+
+script: 
+  - make test
+  - ./bin/test_smart_enum
