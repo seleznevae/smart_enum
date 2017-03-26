@@ -473,120 +473,77 @@ SmartEnum to_enum(const char *str)
 
 
 
+//template<typename T>
+//struct BaseClass_Derived2 {
+
+//    using MetaList             = atch::meta_list  <class Derived2>;
+//    using MetaListNames        = atch::meta_list  <class Derived2_names>;
+//    using MetaListDescriptions = atch::meta_list  <class Derived2_descriptions>;
+
+//    enum class BaseClass_Derived2_enum:int {
+//    };
+//    BaseClass_Derived2_enum enum_member;
+
+//    constexpr BaseClass_Derived2(BaseClass_Derived2_enum member_): enum_member(member_) { }
+//    constexpr BaseClass_Derived2(){ }
+
+//    constexpr bool operator==(BaseClass_Derived2_enum en) {return en == enum_member;}
+//    using is_special_enum = bool;
+//    using value_t = BaseClass_Derived2_enum;
+//    using underliyng_t = int;
+
+//    constexpr operator BaseClass_Derived2_enum() const { return enum_member;}
+
+//    using dummy_type = struct BaseClass_Derived2<T>;
+//};
+
+//struct Derived2: public BaseClass_Derived2<Derived2> {
+//    using BaseClass_Derived2::BaseClass_Derived2;
+
+////    using dummy_type::dummy_type;
+
+//    //data
+//    static constexpr BaseClass_Derived2_enum elem0 = static_cast<BaseClass_Derived2_enum>(20);
+//    static constexpr int dummy_member0 = MetaList::push<Wrap<static_cast<int>(elem0)>>();
+//    //names
+//    struct name_helper_elem0  { constexpr static char const* str() { return "elem0"; }  };
+//    static constexpr int names_dummy_member0 = MetaListNames::push<name_helper_elem0>();
+//    //descriptions
+//    struct descr_helper_elem0  { constexpr static char const* str() { return "descr elem0"; }  };
+//    static constexpr int descr_dummy_member0 = MetaListDescriptions::push<descr_helper_elem0>();
 
 
+//    //data
+//    static constexpr BaseClass_Derived2_enum elem1 = static_cast<BaseClass_Derived2_enum>(21);
+//    static constexpr int dummy_member1 = MetaList::push<Wrap<static_cast<int>(elem1)>>();
+//    //names
+//    struct name_helper_elem1  { constexpr static char const* str() { return "elem1"; }  };
+//    static constexpr int names_dummy_member1 = MetaListNames::push<name_helper_elem1>();
+//    //descriptions
+//    struct descr_helper_elem1  { constexpr static char const* str() { return "descr elem1"; }  };
+//    static constexpr int descr_dummy_member1 = MetaListDescriptions::push<descr_helper_elem1>();
 
+//    //data
+//    static constexpr BaseClass_Derived2_enum elem2 = static_cast<BaseClass_Derived2_enum>(22);
+//    static constexpr int dummy_member2 = MetaList::push<Wrap<static_cast<int>(elem2)>>();
+//    //names
+//    struct name_helper_elem2  { constexpr static char const* str() { return "elem2"; }  };
+//    static constexpr int names_dummy_member2 = MetaListNames::push<name_helper_elem2>();
+//    //descriptions
+//    struct descr_helper_elem2  { constexpr static char const* str() { return "descr elem2"; }  };
+//    static constexpr int descr_dummy_member2 = MetaListDescriptions::push<descr_helper_elem2>();
 
+//    //data
+//    static constexpr BaseClass_Derived2_enum elem3 = static_cast<BaseClass_Derived2_enum>(23);
+//    static constexpr int dummy_member3 = MetaList::push<Wrap<static_cast<int>(elem3)>>();
+//    //names
+//    struct name_helper_elem3  { constexpr static char const* str() { return "elem3"; }  };
+//    static constexpr int names_dummy_member3 = MetaListNames::push<name_helper_elem3>();
+//    //descriptions
+//    struct descr_helper_elem3  { constexpr static char const* str() { return "descr elem3"; }  };
+//    static constexpr int descr_dummy_member3 = MetaListDescriptions::push<descr_helper_elem3>();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template<typename T>
-struct BaseClass_Derived1 {
-    using MetaList = atch::meta_list<class Derived1>;
-};
-
-struct Derived1: public BaseClass_Derived1<int> {
-    static constexpr int elem1 = 1;
-    static constexpr bool dummy_member1 = MetaList::push<Wrap<elem1>>();
-    static constexpr int elem2 = 2;
-    static constexpr bool dummy_member2 = MetaList::push<Wrap<elem2>>();
-    static constexpr int elem3 = 5;
-    static constexpr bool dummy_member3 = MetaList::push<Wrap<elem3>>();
-};
-
-
-
-template<typename T>
-struct BaseClass_Derived2 {
-
-    using MetaList             = atch::meta_list  <class Derived2>;
-    using MetaListNames        = atch::meta_list  <class Derived2_names>;
-    using MetaListDescriptions = atch::meta_list  <class Derived2_descriptions>;
-
-    enum class BaseClass_Derived2_enum:int {
-    };
-    BaseClass_Derived2_enum enum_member;
-
-    constexpr BaseClass_Derived2(BaseClass_Derived2_enum member_): enum_member(member_) { }
-    constexpr BaseClass_Derived2(){ }
-
-    constexpr bool operator==(BaseClass_Derived2_enum en) {return en == enum_member;}
-    using is_special_enum = bool;
-    using value_t = BaseClass_Derived2_enum;
-    using underliyng_t = int;
-
-    constexpr operator BaseClass_Derived2_enum() const { return enum_member;}
-
-    using dummy_type = struct BaseClass_Derived2<T>;
-};
-
-struct Derived2: public BaseClass_Derived2<Derived2> {
-    using BaseClass_Derived2::BaseClass_Derived2;
-
-//    using dummy_type::dummy_type;
-
-    //data
-    static constexpr BaseClass_Derived2_enum elem0 = static_cast<BaseClass_Derived2_enum>(20);
-    static constexpr int dummy_member0 = MetaList::push<Wrap<static_cast<int>(elem0)>>();
-    //names
-    struct name_helper_elem0  { constexpr static char const* str() { return "elem0"; }  };
-    static constexpr int names_dummy_member0 = MetaListNames::push<name_helper_elem0>();
-    //descriptions
-    struct descr_helper_elem0  { constexpr static char const* str() { return "descr elem0"; }  };
-    static constexpr int descr_dummy_member0 = MetaListDescriptions::push<descr_helper_elem0>();
-
-
-    //data
-    static constexpr BaseClass_Derived2_enum elem1 = static_cast<BaseClass_Derived2_enum>(21);
-    static constexpr int dummy_member1 = MetaList::push<Wrap<static_cast<int>(elem1)>>();
-    //names
-    struct name_helper_elem1  { constexpr static char const* str() { return "elem1"; }  };
-    static constexpr int names_dummy_member1 = MetaListNames::push<name_helper_elem1>();
-    //descriptions
-    struct descr_helper_elem1  { constexpr static char const* str() { return "descr elem1"; }  };
-    static constexpr int descr_dummy_member1 = MetaListDescriptions::push<descr_helper_elem1>();
-
-    //data
-    static constexpr BaseClass_Derived2_enum elem2 = static_cast<BaseClass_Derived2_enum>(22);
-    static constexpr int dummy_member2 = MetaList::push<Wrap<static_cast<int>(elem2)>>();
-    //names
-    struct name_helper_elem2  { constexpr static char const* str() { return "elem2"; }  };
-    static constexpr int names_dummy_member2 = MetaListNames::push<name_helper_elem2>();
-    //descriptions
-    struct descr_helper_elem2  { constexpr static char const* str() { return "descr elem2"; }  };
-    static constexpr int descr_dummy_member2 = MetaListDescriptions::push<descr_helper_elem2>();
-
-    //data
-    static constexpr BaseClass_Derived2_enum elem3 = static_cast<BaseClass_Derived2_enum>(23);
-    static constexpr int dummy_member3 = MetaList::push<Wrap<static_cast<int>(elem3)>>();
-    //names
-    struct name_helper_elem3  { constexpr static char const* str() { return "elem3"; }  };
-    static constexpr int names_dummy_member3 = MetaListNames::push<name_helper_elem3>();
-    //descriptions
-    struct descr_helper_elem3  { constexpr static char const* str() { return "descr elem3"; }  };
-    static constexpr int descr_dummy_member3 = MetaListDescriptions::push<descr_helper_elem3>();
-
-};
+//};
 
 
 }
