@@ -40,10 +40,10 @@ SMART_ENUM(Animal, int) {
 ```
 Declaring variables:
 ```c++
-    Animal pet_cat   = Animal::Cat;
-    Animal pet_dog   = Animal::Dog;
-    Animal pet_lion  = Animal::Lion;
-    Animal pet_horse = Animal::Horse;
+Animal pet_cat   = Animal::Cat;
+Animal pet_dog   = Animal::Dog;
+Animal pet_lion  = Animal::Lion;
+Animal pet_horse = Animal::Horse;
 ```
 
 It is possible to convert smart enums to strings:
@@ -56,8 +56,23 @@ std::cout << "pet name: " << smart_enum::to_string(pet_lion) << std::endl;
 
 It is possible get descriptions for smart enum values:
 ```c++
-    std::cout << "descr.: " << smart_enum::get_description(pet_dog) << std::endl;
-    //descr.: dog_description
-    std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
-    //descr.: hOrse
+std::cout << "descr.: " << smart_enum::get_description(pet_dog) << std::endl;
+//descr.: dog_description
+std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
+//descr.: hOrse
+```
+
+Smart enums can be use in switch statements like ordinal enums
+```c++
+switch (pet_cat) {
+     case Animal::Cat:
+         assert(true);
+         break;
+     case Animal::Horse:
+         assert(false);
+         break;
+     default:
+         assert(false);
+         break;
+ }
 ```
