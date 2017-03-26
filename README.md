@@ -19,3 +19,5 @@ enum class Animal {
 
 DECLARE_ENUM(Animal, Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse);
 ```
+This code violates DRY (don't repeat yourself) principle. The aim of **smart enum** library to give macros that can be use in enum
+declaration and user will not need to repeat enum elements.
