@@ -62,7 +62,7 @@ std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
 //descr.: hOrse
 ```
 
-Smart enums can be use in switch statements like ordinal enums
+Smart enums can be use in switch statements like ordinal enums:
 ```c++
 switch (pet_cat) {
      case Animal::Cat:
@@ -75,4 +75,16 @@ switch (pet_cat) {
          assert(false);
          break;
  }
+```
+It is possible got get information about number of elements declared in smart enum:
+```c++
+std::cout << "Elements in smart enum: " << smart_enum::enum_size<Animal>() << std::endl;
+//Elements in smart enum: 4
+```
+
+It is possible got get information about number of elements declared in smart enum:
+```c++
+Animal invalid;
+*(reinterpret_cast<int*>(&invalid)) = 6666;
+assert(smart_enum::check(invalid) == false);
 ```
