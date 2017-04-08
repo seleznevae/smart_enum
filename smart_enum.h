@@ -76,6 +76,7 @@ struct AAA_base {
       constexpr  HelperClass(internal_enum_t v): value(static_cast<underl_t>(v)) { }
       constexpr  HelperClass(const HelperClass<k> &v): value(v.value) { }
       underl_t value;
+      constexpr operator internal_enum_t() const { return static_cast<internal_enum_t>(value); }
   };
 
   using InternHelpType = HelperClass<1>;
@@ -83,6 +84,7 @@ struct AAA_base {
   using BaseType = AAA_base<T>;
 
   static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
+  constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
 };
 
 
@@ -106,7 +108,9 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
         static constexpr auto description() { return "enum_elem0_description"; }
     };
     constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem0 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
-    constexpr SmartEnumMutualAlias(BaseType b): BaseType(static_cast<internal_enum_t>(b.enum_member.value)) {}
+//    constexpr SmartEnumMutualAlias(BaseType b): BaseType(static_cast<internal_enum_t>(b.enum_member.value)) {}
+
+
 
     static constexpr InternHelpType enum_elem1 = static_cast<internal_enum_t>(9);
     template <int, int dummy>
@@ -119,7 +123,6 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
         static constexpr auto description() { return "enum_elem1_description"; }
     };
     constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem1 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
-
 };
 
 
@@ -138,6 +141,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       struct HelperClass {\
           constexpr  HelperClass(internal_enum_t v): value(static_cast<underl_t>(v)) { }\
           underl_t value;\
+          constexpr operator underl_t() const { return static_cast<underl_t>(value); }\
       };\
     \
       using InternHelpType = HelperClass<1>;\
@@ -145,6 +149,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       using BaseType = enum_name##_base<T>; \
     \
       static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }\
+      constexpr  operator underl_t() const { return static_cast<underl_t>(enum_member.value); }\
     };\
     \
 template <int k> \

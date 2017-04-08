@@ -31,7 +31,7 @@ SMART_ENUM(Animal, int) {
 
 
 using namespace smart_enum;
-TEST_CASE( "Base tests for smart enums", "[base]" )
+TEST_CASE( "Base tests", "[base]" )
 {
     //constructors testing
     Animal aa1(Animal::Dog);
@@ -47,15 +47,57 @@ TEST_CASE( "Base tests for smart enums", "[base]" )
     // assignment operators testing
     aa1 = aa2;
     aa1 = Animal::Dog;
+}
 
+
+TEST_CASE( "Switch-case tests", "[switch]")
+{
+    Animal aa(Animal::Cat);
+    bool is_result_ok = false;
+    switch (aa) {
+        case Animal::Cat:
+            is_result_ok = true;
+            break;
+        case Animal::Dog:
+            is_result_ok = false;
+            break;
+    }
+
+    REQUIRE (is_result_ok == true);
+}
+
+//namespace tests
+namespace test_nms
+{
+    SMART_ENUM(Color, int) {
+         SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red");
+         SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue");
+    };
+}
+
+TEST_CASE("Namespace tests", "[namespace]")
+{
+    test_nms::Color c1(test_nms::Color::Red);
+    test_nms::Color c2{test_nms::Color::Red};
+    test_nms::Color c3 = {test_nms::Color::Red};
+    test_nms::Color c4 = test_nms::Color::Red;
+
+    (void)c1;
+    (void)c2;
+    (void)c3;
+    (void)c4;
+}
+
+TEST_CASE( "Size tests", "[size]" )
+{
     // enum size testing
     REQUIRE( sizeof(Animal)      == sizeof(int) );
     REQUIRE( sizeof(Animal::Dog) == sizeof(int) );
 
     // number of element in enum testing
     REQUIRE( Animal::enum_size() == 4          );
-
 }
+
 
 /*TEST_CASE( "Base tests for smart enums", "[base]" )
 {
