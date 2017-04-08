@@ -3,7 +3,7 @@
 
 
 #include <type_traits>
-
+#include <vector>
 
 namespace smart_enum
 {
@@ -14,22 +14,12 @@ namespace detail
 template <template <int, int> class SpecClass, int k>
 using is_specialized_for_first = std::is_default_constructible<SpecClass<k, 0>>;
 
-
-//template <typename EnumType, int k>
-//size_t enum_size_impl()
-//{
-//    if constexpr(is_specialized_for_first<EnumType:: template ClassToSpec, k>::value)
-//        return 1 + enum_size_impl<EnumType, k + 1>();
-//    else
-//        return 0;
-//}
-
 template <typename EnumType, int k, bool is_specialized>//typename dummy = typename std::enable_if<is_specialized_for_first<EnumType:: template ClassToSpec, k>::value> >
 struct enum_sz_impl_class;
 
 template <typename EnumType, int k >
 struct enum_sz_impl_class<EnumType, k, true> {
-    static size_t enum_sz() { return 1 + enum_sz_impl_class<EnumType,
+    static constexpr size_t enum_sz() { return 1 + enum_sz_impl_class<EnumType,
                                                             k + 1,
                                                             is_specialized_for_first<EnumType:: template ClassToSpec, k + 1>::value
                                                             >::enum_sz(); }
@@ -37,25 +27,52 @@ struct enum_sz_impl_class<EnumType, k, true> {
 
 template <typename EnumType, int k>
 struct enum_sz_impl_class<EnumType, k, false> {
-    static size_t enum_sz() { return 0; }
+    static constexpr size_t enum_sz() { return 0; }
 };
 
 template <typename EnumType, int k>
-size_t enum_size_impl()
+constexpr size_t enum_size_impl()
 {
     return enum_sz_impl_class<EnumType, k, is_specialized_for_first<EnumType:: template ClassToSpec, k>::value >::enum_sz();
-//    return 1 + enum_size_impl<EnumType, k + 1>();
 }
-
-
 
 } //detail
 
 template <typename EnumType>
-size_t enum_size()
+constexpr size_t enum_size()
 {
     return detail::enum_size_impl<EnumType, EnumType::base_value + 1>();
 }
+
+
+
+
+namespace detail
+{
+
+template <typename EnumType, int i, int k >
+struct enum_check_impl_class {
+    static bool check(EnumType enum_value)
+    {
+        return enum_value.enum_member == EnumType::template ClassToSpec<EnumType::base_value+1+i,0>::value
+                ? true
+                : detail::enum_check_impl_class<EnumType, i + 1, enum_size<EnumType>()>::check(enum_value);
+    }
+};
+
+template <typename EnumType, int k >
+struct enum_check_impl_class<EnumType, k, k> {
+    static bool check(EnumType) { return false; }
+};
+
+} //detail
+
+template <typename EnumType>
+bool enum_check(EnumType enum_value)
+{
+    return detail::enum_check_impl_class<EnumType, 0, enum_size<EnumType>()>::check(enum_value);
+}
+
 } //smart_enum
 
 
@@ -85,6 +102,8 @@ struct AAA_base {
 
   static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
   constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
+
+
 };
 
 

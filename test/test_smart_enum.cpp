@@ -12,14 +12,6 @@
 
 using namespace std;
 
-//SMART_ENUM(Animal, int) {
-//    INITIALIZE_SMART_ENUM;
-
-//    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
-//    SM_ENUM_ELEM(Cat,    2,  "cat"  );
-//    SM_ENUM_ELEM(Lion,   5);
-//    SM_ENUM_ELEM(Horse,  10,  "hOrse");
-//};
 
 SMART_ENUM(Animal, int) {
      SM_ENUM_ELEM4(Dog,    1,  "dog"  , "dog_description");
@@ -96,6 +88,28 @@ TEST_CASE( "Size tests", "[size]" )
 
     // number of element in enum testing
     REQUIRE( Animal::enum_size() == 4          );
+}
+
+
+// check function tests
+TEST_CASE( "Check tests", "[check]" )
+{
+    Animal a1(Animal::Dog);
+    Animal a2(Animal::Cat);
+    Animal a3(Animal::Lion);
+    Animal a4(Animal::Horse);
+
+    REQUIRE ( smart_enum::enum_check(a1) == true );
+    REQUIRE ( smart_enum::enum_check(a2) == true );
+    REQUIRE ( smart_enum::enum_check(a3) == true );
+    REQUIRE ( smart_enum::enum_check(a4) == true );
+
+    *(int*)&a1 = 0;
+    *(int*)&a2 = 4;
+    *(int*)&a3 = 6;
+    REQUIRE ( smart_enum::enum_check(a1) == false );
+    REQUIRE ( smart_enum::enum_check(a2) == false );
+    REQUIRE ( smart_enum::enum_check(a3) == false );
 }
 
 
