@@ -10,17 +10,54 @@
 #include "smart_enum.h"
 #include "third_party/Catch/catch.hpp"
 
+using namespace std;
+
+//SMART_ENUM(Animal, int) {
+//    INITIALIZE_SMART_ENUM;
+
+//    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
+//    SM_ENUM_ELEM(Cat,    2,  "cat"  );
+//    SM_ENUM_ELEM(Lion,   5);
+//    SM_ENUM_ELEM(Horse,  10,  "hOrse");
+//};
 
 SMART_ENUM(Animal, int) {
-    INITIALIZE_SMART_ENUM;
-
-    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
-    SM_ENUM_ELEM(Cat,    2,  "cat"  );
-    SM_ENUM_ELEM(Lion,   5);
-    SM_ENUM_ELEM(Horse,  10,  "hOrse");
+     SM_ENUM_ELEM4(Dog,    1,  "dog"  , "dog_description");
+     SM_ENUM_ELEM4(Cat,    2,  "cat"  , "cat_description");
+     SM_ENUM_ELEM4(Lion,   3,  "Lion" , "lion_description");
+     SM_ENUM_ELEM4(Horse,  5,  "horse", "horse_description");
 };
 
+
+
+using namespace smart_enum;
 TEST_CASE( "Base tests for smart enums", "[base]" )
+{
+    //constructors testing
+    Animal aa1(Animal::Dog);
+    Animal aa2{Animal::Dog};
+    Animal aa3 = {Animal::Dog};
+    Animal aa4 = Animal(Animal::Dog);
+
+    (void)aa1;
+    (void)aa2;
+    (void)aa3;
+    (void)aa4;
+
+    // assignment operators testing
+    aa1 = aa2;
+    aa1 = Animal::Dog;
+
+    // enum size testing
+    REQUIRE( sizeof(Animal)      == sizeof(int) );
+    REQUIRE( sizeof(Animal::Dog) == sizeof(int) );
+
+    // number of element in enum testing
+    REQUIRE( Animal::enum_size() == 4          );
+
+}
+
+/*TEST_CASE( "Base tests for smart enums", "[base]" )
 {
     Animal pet_0 = Animal::Dog;
     Animal pet_1 = Animal::Horse;
@@ -110,4 +147,4 @@ TEST_CASE( "Checking data in enums", "[check]" )
 TEST_CASE( "Checking index of element in enums", "[index_of]" )
 {
     REQUIRE(smart_enum::index_of<Animal>(Animal::Lion) == 2);
-}
+}*/

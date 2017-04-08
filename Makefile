@@ -6,8 +6,9 @@ ERROR_CHECKING_POLICY = #-Werror
 CC            = gcc
 CXX           = g++-6
 DEFINES       =
-CFLAGS        = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(ERROR_CHECKING_POLICY) $(DEFINES) 
-CXXFLAGS      = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(ERROR_CHECKING_POLICY) -std=c++14 $(DEFINES)
+OPTIMIZATIONS = -O2
+CFLAGS        = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(OPTIMIZATIONS) $(ERROR_CHECKING_POLICY) $(DEFINES)
+CXXFLAGS      = -pipe  -Wall -W -D_REENTRANT -fPIC -MMD $(OPTIMIZATIONS) $(ERROR_CHECKING_POLICY) -std=c++14 $(DEFINES)
 INCPATH       = -I./src -I. -I./src/ext/ecolib/src
 INSTALL_DIR   = cp -f -R
 DEL_FILE      = rm -f
