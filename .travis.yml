@@ -26,7 +26,7 @@ script:
   # Check versions of gcc, g++ and cmake
   - gcc -v && g++ -v 
   # Run your build commands next
-  - make
+  #- make
   - make test
   - ./bin/test_smart_enum
 
