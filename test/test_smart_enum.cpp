@@ -141,23 +141,8 @@ TEST_CASE( "Index tests", "[index]" )
 
     REQUIRE ( smart_enum::index_of(a1) == 0 );
     REQUIRE ( smart_enum::index_of(a2) == 1 );
-//    REQUIRE ( smart_enum::index_of(a3) == 2 );
-//    REQUIRE ( smart_enum::index_of(a4) == 3 );
-
-//    REQUIRE ( a1.check() == true );
-//    REQUIRE ( a2.check() == true );
-//    REQUIRE ( a3.check() == true );
-//    REQUIRE ( a4.check() == true );
-
-//    *(int*)&a1 = 0;
-//    *(int*)&a2 = 4;
-//    *(int*)&a3 = 6;
-//    REQUIRE ( smart_enum::enum_check(a1) == false );
-//    REQUIRE ( smart_enum::enum_check(a2) == false );
-//    REQUIRE ( smart_enum::enum_check(a3) == false );
-//    REQUIRE ( a1.check() == false );
-//    REQUIRE ( a2.check() == false );
-//    REQUIRE ( a3.check() == false );
+    REQUIRE ( smart_enum::index_of(a3) == 2 );
+    REQUIRE ( smart_enum::index_of(a4) == 3 );
 }
 
 
