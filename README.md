@@ -13,9 +13,9 @@ C++ doesn't have reflection. It is a common technique to use macros to add compi
 ```c++
 enum class Animal {
   Dog = 1,
-  Cat = 1,
-  Lion = 1,
-  Horse = 1,
+  Cat = 2,
+  Lion = 4,
+  Horse = 5,
 };
 
 DECLARE_ENUM(Animal, Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse);
