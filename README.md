@@ -38,10 +38,10 @@ SMART_ENUM(Animal, int) {
 ```
 Definitions of variables:
 ```c++
-Animal pet_cat   = Animal::Cat;
+Animal pet_cat   ={Animal::Cat};
 Animal pet_dog   = Animal::Dog;
-Animal pet_lion  = Animal::Lion;
-Animal pet_horse = Animal::Horse;
+Animal pet_lion   (Animal::Lion);
+Animal pet_horse  {Animal::Horse};
 ```
 
 It is possible to convert smart enums to strings:
