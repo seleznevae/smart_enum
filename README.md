@@ -4,11 +4,7 @@
 - [Examples](#examples)
 - [License](#license)
 
-Smart enum is a short test library for smart enums in C++.
-Implementation is based on materials for [SMETA](http://b.atch.se/posts/constexpr-meta-container/attachments/stateful_meta_container-poc.cpp) (stateful meta-programming library) by Filip Roséen.
-
-Author doesn't know if these techniques are valid according to the C++ standard and this programs are not ill-formed.
-So **it's not recommended to use this library in your production code**. **This library is just an experiment**.
+Smart enum is a short library for smart enums in C++.
 
 ## Design goals
 
@@ -34,8 +30,6 @@ Declaration of smart enum looks like this:
 #include "smart_enum.h"
 
 SMART_ENUM(Animal, int) {
-    INITIALIZE_SMART_ENUM;
-
     SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
     SM_ENUM_ELEM(Cat,    2,  "cat"  );
     SM_ENUM_ELEM(Lion,   5);
