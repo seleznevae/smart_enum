@@ -14,10 +14,10 @@ using namespace std;
 
 
 SMART_ENUM(Animal, int) {
-     SM_ENUM_ELEM4(Dog,    1,  "dog"  , "dog_description");
-     SM_ENUM_ELEM4(Cat,    2,  "cat"  , "cat_description");
-     SM_ENUM_ELEM4(Lion,   3,  "Lion" , "lion_description");
-     SM_ENUM_ELEM4(Horse,  5,  "horse", "horse_description");
+     SM_ENUM_ELEM4(Dog,    1,  "dog"  , "dog_description")
+     SM_ENUM_ELEM4(Cat,    2,  "cat"  , "cat_description")
+     SM_ENUM_ELEM4(Lion,   3,  "Lion" , "lion_description")
+     SM_ENUM_ELEM4(Horse,  5,  "horse", "horse_description")
 };
 
 
@@ -69,8 +69,8 @@ TEST_CASE( "Switch-case tests", "[switch]")
 namespace test_nms
 {
     SMART_ENUM(Color, int) {
-         SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red");
-         SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue");
+         SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red")
+         SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue")
     };
 }
 
@@ -143,6 +143,25 @@ TEST_CASE( "Index tests", "[index]" )
     REQUIRE ( smart_enum::index_of(a2) == 1 );
     REQUIRE ( smart_enum::index_of(a3) == 2 );
     REQUIRE ( smart_enum::index_of(a4) == 3 );
+
+    REQUIRE ( a1.index() == 0 );
+    REQUIRE ( a2.index() == 1 );
+    REQUIRE ( a3.index() == 2 );
+    REQUIRE ( a4.index() == 3 );
+
+    *(int*)&a1 = 666;
+    REQUIRE ( smart_enum::index_of(a1) == -1 );
+    REQUIRE ( a1.index() == -1 );
+}
+
+// values tests
+TEST_CASE( "Values tests", "[values]" )
+{
+    constexpr auto values = smart_enum::values<Animal>();
+    std::array<Animal, 4> correct_values = {Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse};
+
+    REQUIRE ( values           == correct_values );
+    REQUIRE ( Animal::values() == correct_values );
 }
 
 

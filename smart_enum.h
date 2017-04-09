@@ -3,7 +3,7 @@
 
 
 #include <type_traits>
-#include <vector>
+#include <array>
 
 namespace smart_enum
 {
@@ -46,13 +46,13 @@ constexpr size_t enum_size()
 
 
 
-
+/////////////////////////////////////////////////////////////////////////////////////////
 namespace detail
 {
 
 template <typename EnumType, int i, int k >
 struct enum_check_impl_class {
-    static bool check(EnumType enum_value)
+    constexpr static bool check(EnumType enum_value)
     {
         return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+i,0>::value)
                 ? true
@@ -62,43 +62,105 @@ struct enum_check_impl_class {
 
 template <typename EnumType, int k >
 struct enum_check_impl_class<EnumType, k, k> {
-    static bool check(EnumType) { return false; }
+    constexpr static bool check(EnumType) { return false; }
 };
 
 } //detail
 
 template <typename EnumType>
-bool enum_check(EnumType enum_value)
+constexpr bool enum_check(EnumType enum_value)
 {
     return detail::enum_check_impl_class<EnumType, 0, enum_size<EnumType>()>::check(enum_value);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
 namespace detail
 {
 
 template <typename EnumType, int i, int k >
 struct index_of_impl_class {
-    static ssize_t index_of(EnumType enum_value)
+    constexpr static ssize_t index_of(EnumType enum_value)
     {
         return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+i,0>::value)
                 ? i
-                : detail::enum_check_impl_class<EnumType, i + 1, enum_size<EnumType>()>::check(enum_value);
+                : detail::index_of_impl_class<EnumType, i + 1, enum_size<EnumType>()>::index_of(enum_value);
     }
 };
 
 template <typename EnumType, int k >
 struct index_of_impl_class<EnumType, k, k> {
-    static ssize_t index_of(EnumType) { return -1; }
+    constexpr static ssize_t index_of(EnumType) { return -1; }
 };
 
 } //detail
 
 template <typename EnumType>
-ssize_t index_of(EnumType value)
+constexpr ssize_t index_of(EnumType value)
 {
     return detail::index_of_impl_class<EnumType, 0, enum_size<EnumType>()>::index_of(value);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+template <typename EnumType, size_t n>
+constexpr EnumType
+get_n()
+{
+    static_assert(n < smart_enum::enum_size<EnumType>(), "Incorrect get argument");
+    constexpr auto tmp = static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+n,0>::value);
+    return EnumType(typename EnumType::InternHelpType(tmp));
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace detail
+{
+
+namespace array_detail
+{
+template<long unsigned... Is> struct seq{};
+template<long unsigned N, long unsigned... Is>
+struct gen_seq : gen_seq<N-1, N-1, Is...>{};
+template<long unsigned... Is>
+struct gen_seq<0, Is...> : seq<Is...>{};
+
+template<typename T, long unsigned N1, long unsigned... I1, long unsigned N2, long unsigned... I2>
+// Expansion pack
+constexpr std::array<T, N1+N2> concat_impl(const std::array<T, N1>& a1, const std::array<T, N2>& a2, seq<I1...>, seq<I2...>){
+  return { a1[I1]..., a2[I2]... };
+}
+
+template<typename T, long unsigned N1, long unsigned N2>
+// Initializer for the recursion
+constexpr std::array<T, N1+N2> concat(const std::array<T, N1>& a1, const std::array<T, N2>& a2){
+  return concat_impl(a1, a2, gen_seq<N1>{}, gen_seq<N2>{});
+}
+}
+
+template <typename EnumType, int i, int k >
+struct values_impl_class {
+    constexpr static std::array<EnumType, k - i>
+    values()
+    {
+        return array_detail::concat(std::array<EnumType, 1> {smart_enum::get_n<EnumType, i>()},
+                                    detail::values_impl_class<EnumType, i + 1, k>::values());
+    }
+};
+
+template <typename EnumType, int k >
+struct values_impl_class<EnumType, k, k> {
+    constexpr static std::array<EnumType, 0>
+    values() { return {}; }
+};
+
+} //detail
+
+template <typename EnumType>
+constexpr std::array<EnumType, smart_enum::enum_size<EnumType>()>
+values()
+{
+    return detail::values_impl_class<EnumType, 0, enum_size<EnumType>()>::values();
+}
 
 
 } //smart_enum
@@ -132,8 +194,9 @@ struct AAA_base {
 
   static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
   constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
-  constexpr bool check() const { return smart_enum::enum_check<T>(*this); }
-
+  constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }
+  constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }
+  constexpr static auto  values() { return smart_enum::values<T>(); }
 };
 
 
@@ -200,6 +263,8 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }\
       constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }\
       constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }\
+      constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }\
+      constexpr static auto  values() { return smart_enum::values<T>(); } \
     };\
     \
 template <int k> \
