@@ -1,5 +1,6 @@
 # Smart enum
 [![Build Status](https://travis-ci.org/seleznevae/smart_enum.svg?branch=master)](https://travis-ci.org/seleznevae/smart_enum)
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 - [Design goals](#design-goals)
 - [Examples](#examples)
 - [License](#license)
