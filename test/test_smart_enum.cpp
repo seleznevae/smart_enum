@@ -39,6 +39,11 @@ TEST_CASE( "Base tests", "[base]" )
     // assignment operators testing
     aa1 = aa2;
     aa1 = Animal::Dog;
+
+    //tests for equality operators
+    REQUIRE ( aa1 == aa2 );
+    aa1 = Animal::Cat;
+    REQUIRE ( aa1 != aa2 );
 }
 
 
@@ -52,6 +57,8 @@ TEST_CASE( "Switch-case tests", "[switch]")
             break;
         case Animal::Dog:
             is_result_ok = false;
+            break;
+        default:
             break;
     }
 
@@ -104,13 +111,55 @@ TEST_CASE( "Check tests", "[check]" )
     REQUIRE ( smart_enum::enum_check(a3) == true );
     REQUIRE ( smart_enum::enum_check(a4) == true );
 
+    REQUIRE ( a1.check() == true );
+    REQUIRE ( a2.check() == true );
+    REQUIRE ( a3.check() == true );
+    REQUIRE ( a4.check() == true );
+
     *(int*)&a1 = 0;
     *(int*)&a2 = 4;
     *(int*)&a3 = 6;
     REQUIRE ( smart_enum::enum_check(a1) == false );
     REQUIRE ( smart_enum::enum_check(a2) == false );
     REQUIRE ( smart_enum::enum_check(a3) == false );
+    REQUIRE ( a1.check() == false );
+    REQUIRE ( a2.check() == false );
+    REQUIRE ( a3.check() == false );
 }
+
+enum class AAAAA {
+    a,b
+};
+
+// index tests
+TEST_CASE( "Index tests", "[index]" )
+{
+    Animal a1(Animal::Dog);
+    Animal a2(Animal::Cat);
+    Animal a3(Animal::Lion);
+    Animal a4(Animal::Horse);
+
+    REQUIRE ( smart_enum::index_of(a1) == 0 );
+    REQUIRE ( smart_enum::index_of(a2) == 1 );
+//    REQUIRE ( smart_enum::index_of(a3) == 2 );
+//    REQUIRE ( smart_enum::index_of(a4) == 3 );
+
+//    REQUIRE ( a1.check() == true );
+//    REQUIRE ( a2.check() == true );
+//    REQUIRE ( a3.check() == true );
+//    REQUIRE ( a4.check() == true );
+
+//    *(int*)&a1 = 0;
+//    *(int*)&a2 = 4;
+//    *(int*)&a3 = 6;
+//    REQUIRE ( smart_enum::enum_check(a1) == false );
+//    REQUIRE ( smart_enum::enum_check(a2) == false );
+//    REQUIRE ( smart_enum::enum_check(a3) == false );
+//    REQUIRE ( a1.check() == false );
+//    REQUIRE ( a2.check() == false );
+//    REQUIRE ( a3.check() == false );
+}
+
 
 
 /*TEST_CASE( "Base tests for smart enums", "[base]" )
