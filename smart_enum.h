@@ -111,6 +111,14 @@ get_n()
     return EnumType(typename EnumType::InternHelpType(tmp));
 }
 
+template <typename EnumType, size_t n>
+constexpr const char*
+get_name_n()
+{
+    static_assert(n < smart_enum::enum_size<EnumType>(), "Incorrect get argument");
+    return EnumType::template ClassToSpec<EnumType::base_value+1+n,0>::name();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace detail
@@ -162,6 +170,35 @@ values()
     return detail::values_impl_class<EnumType, 0, enum_size<EnumType>()>::values();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+
+namespace detail
+{
+
+template <typename EnumType, int i, int k >
+struct names_impl_class {
+    constexpr static std::array<const char*, k - i>
+    names()
+    {
+        return array_detail::concat(std::array<const char*, 1> {smart_enum::get_name_n<EnumType, i>()},
+                                    detail::names_impl_class<EnumType, i + 1, k>::names());
+    }
+};
+
+template <typename EnumType, int k >
+struct names_impl_class<EnumType, k, k> {
+    constexpr static std::array<const char*, 0>
+    names() { return {}; }
+};
+
+}
+
+template <typename EnumType>
+constexpr std::array<const char*, smart_enum::enum_size<EnumType>()>
+names()
+{
+    return detail::names_impl_class<EnumType, 0, enum_size<EnumType>()>::names();
+}
 
 } //smart_enum
 
@@ -197,6 +234,7 @@ struct AAA_base {
   constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }
   constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }
   constexpr static auto  values() { return smart_enum::values<T>(); }
+  constexpr static auto  names() { return smart_enum::names<T>(); }
 };
 
 
@@ -265,6 +303,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }\
       constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }\
       constexpr static auto  values() { return smart_enum::values<T>(); } \
+      constexpr static auto  names()  { return smart_enum::names<T>(); }\
     };\
     \
 template <int k> \
@@ -287,8 +326,8 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>: \
     template <int dummy>\
     struct ClassToSpec<counter_enum_##elem_id, dummy> {\
         static constexpr underl_t value = static_cast<underl_t>(elem_id.value);\
-        static constexpr auto name() { return #elem_name ; }\
-        static constexpr auto description() { return #elem_description ; }\
+        static constexpr auto name() { return elem_name ; }\
+        static constexpr auto description() { return elem_description ; }\
     };\
     constexpr SmartEnumMutualAlias(HelperClass<counter_enum_##elem_id - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 

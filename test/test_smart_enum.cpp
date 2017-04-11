@@ -165,6 +165,24 @@ TEST_CASE( "Values tests", "[values]" )
 }
 
 
+TEST_CASE( "Names tests", "[namees]" )
+{
+    constexpr auto names = smart_enum::names<Animal>();
+    std::array<std::string, 4> str_names;
+    for (size_t i = 0; i < names.size(); ++i)
+        str_names[i] = names[i];
+    std::array<std::string, 4> correct_names = {"dog", "cat", "Lion", "horse"};
+
+
+    REQUIRE ( str_names == correct_names );
+
+
+    constexpr auto names2 = Animal::names();
+    for (size_t i = 0; i < names2.size(); ++i)
+        str_names[i] = names2[i];
+
+    REQUIRE ( str_names == correct_names );
+}
 
 /*TEST_CASE( "Base tests for smart enums", "[base]" )
 {
