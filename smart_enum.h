@@ -238,6 +238,55 @@ descriptions()
     return detail::descriptions_impl_class<EnumType, 0, enum_size<EnumType>()>::descriptions();
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////
+namespace detail
+{
+    template <typename SmartEnum, size_t CurPos, size_t Size>
+    struct enum_to_string_impl {
+        static constexpr
+        const char* to_string(ssize_t pos_to_extract)
+        {
+            return CurPos == pos_to_extract
+                    ? get_name_n<SmartEnum, CurPos>()
+                    : enum_to_string_impl<SmartEnum, CurPos+1, Size>::to_string(pos_to_extract)
+                ;
+        }
+    };
+
+    template <typename SmartEnum, size_t Size>
+    struct enum_to_string_impl<SmartEnum, Size, Size>
+    {
+        static constexpr
+        const char* to_string(ssize_t /*pos_to_extract*/)
+        {
+            return "Unknown";
+        }
+    };
+}
+
+template <typename EnumType>
+constexpr const char* to_string(EnumType enum_value, bool *ok = nullptr)
+{
+    ssize_t index = smart_enum::index_of(enum_value);
+    if (index == -1) {
+        return      ok
+                ? (*ok = false, "Unknown")
+                : (throw std::bad_alloc(), "Unknown");
+    }
+    if (ok)
+        *ok = true;
+    return detail::enum_to_string_impl< EnumType,
+                                        0,
+                                        smart_enum::enum_size<EnumType>()
+                                        >::to_string(index);
+
+}
+
+
+
+
+
 } //smart_enum
 
 
@@ -274,6 +323,7 @@ struct AAA_base {
   constexpr static auto  values() { return smart_enum::values<T>(); }
   constexpr static auto  names() { return smart_enum::names<T>(); }
   constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }
+  constexpr const char* to_string(bool *ok = nullptr)const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }
 };
 
 
@@ -344,6 +394,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       constexpr static auto  values() { return smart_enum::values<T>(); } \
       constexpr static auto  names()  { return smart_enum::names<T>(); }\
       constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }\
+      constexpr const char* to_string(bool *ok = nullptr) const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }\
     };\
     \
 template <int k> \

@@ -20,9 +20,6 @@ SMART_ENUM(Animal, int) {
      SM_ENUM_ELEM4(Horse,  5,  "horse", "horse_description")
 };
 
-
-
-using namespace smart_enum;
 TEST_CASE( "Base tests", "[base]" )
 {
     //constructors testing
@@ -195,15 +192,47 @@ TEST_CASE( "descriptions tests", "[descriptions]" )
                                                        "lion_description",
                                                        "horse_description"};
 
-
     REQUIRE ( str_descriptions == correct_descriptions );
-
 
     constexpr auto descriptions2 = Animal::descriptions();
     for (size_t i = 0; i < descriptions2.size(); ++i)
         str_descriptions[i] = descriptions2[i];
 
     REQUIRE ( str_descriptions == correct_descriptions );
+}
+
+TEST_CASE( "Test string representation of smart enums", "[to_string]" )
+{
+    constexpr Animal a1(Animal::Dog);
+    constexpr Animal a2(Animal::Cat);
+    constexpr Animal a3(Animal::Lion);
+    constexpr Animal a4(Animal::Horse);
+
+    constexpr const char* n1 = smart_enum::to_string(a1);
+    constexpr const char* n2 = smart_enum::to_string(a2);
+    constexpr const char* n3 = smart_enum::to_string(a3);
+    constexpr const char* n4 = smart_enum::to_string(a4);
+
+    REQUIRE( n1 == std::string("dog") );
+    REQUIRE( n2 == std::string("cat") );
+    REQUIRE( n3 == std::string("Lion") );
+    REQUIRE( n4 == std::string("horse") );
+
+    Animal invalid(Animal::Dog);
+    *(int*)&invalid = 666;
+    REQUIRE_THROWS_AS( smart_enum::to_string(invalid), std::bad_alloc );
+    bool is_conversion_ok = true;
+    smart_enum::to_string(invalid, &is_conversion_ok);
+    REQUIRE(is_conversion_ok == false);
+    invalid = Animal::Dog;
+    smart_enum::to_string(invalid, &is_conversion_ok);
+    REQUIRE(is_conversion_ok == true);
+
+    REQUIRE( a1.to_string() == std::string("dog") );
+    REQUIRE( a2.to_string() == std::string("cat") );
+    REQUIRE( a3.to_string() == std::string("Lion") );
+    REQUIRE( a4.to_string() == std::string("horse") );
+
 }
 
 /*TEST_CASE( "Base tests for smart enums", "[base]" )
