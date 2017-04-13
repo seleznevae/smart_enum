@@ -48,7 +48,7 @@ namespace detail
 template <template <int, int> class SpecClass, int k>
 using is_specialized_for_first = std::is_default_constructible<SpecClass<k, 0>>;
 
-template <typename EnumType, int k, bool is_specialized>//typename dummy = typename std::enable_if<is_specialized_for_first<EnumType:: template ClassToSpec, k>::value> >
+template <typename EnumType, int k, bool is_specialized>
 struct enum_sz_impl_class;
 
 template <typename EnumType, int k >
@@ -166,42 +166,42 @@ get_description_n()
 namespace detail
 {
 
-namespace array_detail
-{
-template<long unsigned... Is> struct seq{};
-template<long unsigned N, long unsigned... Is>
-struct gen_seq : gen_seq<N-1, N-1, Is...>{};
-template<long unsigned... Is>
-struct gen_seq<0, Is...> : seq<Is...>{};
+    namespace array_detail
+    {
+        template<long unsigned... Is> struct seq{};
+        template<long unsigned N, long unsigned... Is>
+        struct gen_seq : gen_seq<N-1, N-1, Is...>{};
+        template<long unsigned... Is>
+        struct gen_seq<0, Is...> : seq<Is...>{};
 
-template<typename T, long unsigned N1, long unsigned... I1, long unsigned N2, long unsigned... I2>
-// Expansion pack
-constexpr std::array<T, N1+N2> concat_impl(const std::array<T, N1>& a1, const std::array<T, N2>& a2, seq<I1...>, seq<I2...>){
-  return { a1[I1]..., a2[I2]... };
-}
+        template<typename T, long unsigned N1, long unsigned... I1, long unsigned N2, long unsigned... I2>
+        // Expansion pack
+        constexpr std::array<T, N1+N2> concat_impl(const std::array<T, N1>& a1, const std::array<T, N2>& a2, seq<I1...>, seq<I2...>){
+          return { a1[I1]..., a2[I2]... };
+        }
 
-template<typename T, long unsigned N1, long unsigned N2>
-// Initializer for the recursion
-constexpr std::array<T, N1+N2> concat(const std::array<T, N1>& a1, const std::array<T, N2>& a2){
-  return concat_impl(a1, a2, gen_seq<N1>{}, gen_seq<N2>{});
-}
-}
+        template<typename T, long unsigned N1, long unsigned N2>
+        constexpr std::array<T, N1+N2> concat(const std::array<T, N1>& a1, const std::array<T, N2>& a2)
+        {
+          return concat_impl(a1, a2, gen_seq<N1>{}, gen_seq<N2>{});
+        }
+    } //array_detail
 
-template <typename EnumType, int i, int k >
-struct values_impl_class {
+    template <typename EnumType, int i, int k >
+    struct values_impl_class {
     constexpr static std::array<EnumType, k - i>
     values()
     {
         return array_detail::concat(std::array<EnumType, 1> {smart_enum::get_n<EnumType, i>()},
                                     detail::values_impl_class<EnumType, i + 1, k>::values());
     }
-};
+    };
 
-template <typename EnumType, int k >
-struct values_impl_class<EnumType, k, k> {
-    constexpr static std::array<EnumType, 0>
-    values() { return {}; }
-};
+    template <typename EnumType, int k >
+    struct values_impl_class<EnumType, k, k> {
+        constexpr static std::array<EnumType, 0>
+        values() { return {}; }
+    };
 
 } //detail
 
@@ -217,8 +217,8 @@ values()
 namespace detail
 {
 
-template <typename EnumType, int i, int k >
-struct names_impl_class {
+    template <typename EnumType, int i, int k >
+    struct names_impl_class {
     constexpr static std::array<const char*, k - i>
     names()
     {
@@ -227,11 +227,11 @@ struct names_impl_class {
     }
 };
 
-template <typename EnumType, int k >
-struct names_impl_class<EnumType, k, k> {
-    constexpr static std::array<const char*, 0>
-    names() { return {}; }
-};
+    template <typename EnumType, int k >
+    struct names_impl_class<EnumType, k, k> {
+        constexpr static std::array<const char*, 0>
+        names() { return {}; }
+    };
 
 }
 
@@ -247,21 +247,21 @@ names()
 namespace detail
 {
 
-template <typename EnumType, int i, int k >
-struct descriptions_impl_class {
-    constexpr static std::array<const char*, k - i>
-    descriptions()
-    {
-        return array_detail::concat(std::array<const char*, 1> {smart_enum::get_description_n<EnumType, i>()},
-                                    detail::descriptions_impl_class<EnumType, i + 1, k>::descriptions());
-    }
-};
+    template <typename EnumType, int i, int k >
+    struct descriptions_impl_class {
+        constexpr static std::array<const char*, k - i>
+        descriptions()
+        {
+            return array_detail::concat(std::array<const char*, 1> {smart_enum::get_description_n<EnumType, i>()},
+                                        detail::descriptions_impl_class<EnumType, i + 1, k>::descriptions());
+        }
+    };
 
-template <typename EnumType, int k >
-struct descriptions_impl_class<EnumType, k, k> {
-    constexpr static std::array<const char*, 0>
-    descriptions() { return {}; }
-};
+    template <typename EnumType, int k >
+    struct descriptions_impl_class<EnumType, k, k> {
+        constexpr static std::array<const char*, 0>
+        descriptions() { return {}; }
+    };
 
 }
 
@@ -317,7 +317,49 @@ constexpr const char* to_string(EnumType enum_value, bool *ok = nullptr)
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+namespace detail
+{
+    template <typename SmartEnum, size_t CurPos, size_t Size>
+    struct enum_to_description_impl {
+        static constexpr
+        const char* description(ssize_t pos_to_extract)
+        {
+            return CurPos == pos_to_extract
+                    ? get_description_n<SmartEnum, CurPos>()
+                    : enum_to_description_impl<SmartEnum, CurPos+1, Size>::description(pos_to_extract)
+                ;
+        }
+    };
 
+    template <typename SmartEnum, size_t Size>
+    struct enum_to_description_impl<SmartEnum, Size, Size>
+    {
+            static constexpr
+            const char* description(ssize_t /*pos_to_extract*/)
+            {
+                return "Unknown";
+            }
+        };
+}
+
+template <typename EnumType>
+constexpr const char* description(EnumType enum_value, bool *ok = nullptr)
+{
+    ssize_t index = smart_enum::index_of(enum_value);
+    if (index == -1) {
+        return      ok
+                ? (*ok = false, "Unknown")
+                : (throw std::bad_alloc(), "Unknown");
+    }
+    if (ok)
+        *ok = true;
+    return detail::enum_to_description_impl< EnumType,
+                                        0,
+                                        smart_enum::enum_size<EnumType>()
+                                        >::description(index);
+
+}
 
 
 
@@ -358,6 +400,7 @@ struct AAA_base {
   constexpr static auto  names() { return smart_enum::names<T>(); }
   constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }
   constexpr const char* to_string(bool *ok = nullptr)const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }
+  constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }
 };
 
 
@@ -429,6 +472,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       constexpr static auto  names()  { return smart_enum::names<T>(); }\
       constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }\
       constexpr const char* to_string(bool *ok = nullptr) const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }\
+      constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }\
     };\
     \
 template <int k> \

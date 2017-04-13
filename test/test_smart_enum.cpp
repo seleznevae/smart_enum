@@ -232,7 +232,41 @@ TEST_CASE( "Test string representation of smart enums", "[to_string]" )
     REQUIRE( a2.to_string() == std::string("cat") );
     REQUIRE( a3.to_string() == std::string("Lion") );
     REQUIRE( a4.to_string() == std::string("horse") );
+}
 
+TEST_CASE( "Test desription of smart enums", "[description]" )
+{
+    constexpr Animal a1(Animal::Dog);
+    constexpr Animal a2(Animal::Cat);
+    constexpr Animal a3(Animal::Lion);
+    constexpr Animal a4(Animal::Horse);
+
+    constexpr const char* n1 = smart_enum::description(a1);
+    constexpr const char* n2 = smart_enum::description(a2);
+    constexpr const char* n3 = smart_enum::description(a3);
+    constexpr const char* n4 = smart_enum::description(a4);
+
+    REQUIRE( n1 == std::string("dog_description") );
+    REQUIRE( n2 == std::string("cat_description") );
+    REQUIRE( n3 == std::string("lion_description") );
+    REQUIRE( n4 == std::string("horse_description") );
+
+
+
+    Animal invalid(Animal::Dog);
+    *(int*)&invalid = 666;
+    REQUIRE_THROWS_AS( smart_enum::description(invalid), std::bad_alloc );
+    bool is_conversion_ok = true;
+    smart_enum::description(invalid, &is_conversion_ok);
+    REQUIRE(is_conversion_ok == false);
+    invalid = Animal::Dog;
+    smart_enum::description(invalid, &is_conversion_ok);
+    REQUIRE(is_conversion_ok == true);
+
+    REQUIRE( a1.description() == std::string("dog_description") );
+    REQUIRE( a2.description() == std::string("cat_description") );
+    REQUIRE( a3.description() == std::string("lion_description") );
+    REQUIRE( a4.description() == std::string("horse_description") );
 }
 
 /*TEST_CASE( "Base tests for smart enums", "[base]" )
