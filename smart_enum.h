@@ -78,6 +78,32 @@ constexpr size_t enum_size()
     return detail::enum_size_impl<EnumType, EnumType::base_value + 1>();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+namespace detail
+{
+    template<class T>
+    struct void_t {
+      typedef void type;
+    };
+}
+
+
+
+template<class T, class U = void>
+struct is_smart_enum {
+    enum { value = 0 };
+};
+
+template<class T>
+struct is_smart_enum<T, typename smart_enum::detail::void_t<typename T::is_smart_enum>::type > {
+    enum { value = 1 };
+};
+
+
+template <typename T>
+bool is_smart_enum_v = smart_enum::is_smart_enum<T>::value;
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +417,7 @@ struct AAA_base {
   using InternHelpType = HelperClass<1>;
   InternHelpType enum_member;
   using BaseType = AAA_base<T>;
+  using is_smart_enum = std::true_type;
 
   static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
   constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
@@ -425,8 +452,6 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
     };
     constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem0 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 //    constexpr SmartEnumMutualAlias(BaseType b): BaseType(static_cast<internal_enum_t>(b.enum_member.value)) {}
-
-
 
     static constexpr InternHelpType enum_elem1 = static_cast<internal_enum_t>(9);
     template <int, int dummy>
@@ -463,6 +488,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       using InternHelpType = HelperClass<1>;\
       InternHelpType enum_member;\
       using BaseType = enum_name##_base<T>; \
+      using is_smart_enum = std::true_type; \
     \
       static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }\
       constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }\

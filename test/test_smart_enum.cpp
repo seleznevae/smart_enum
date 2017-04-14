@@ -39,6 +39,11 @@ TEST_CASE( "Base tests", "[base]" )
 
     //tests for equality operators
     REQUIRE ( aa1 == aa2 );
+
+    //doesn't compile in c++14
+//    AAA bb = AAA::enum_elem0;
+//    REQUIRE ( bb == AAA::enum_elem0 );
+
     aa1 = Animal::Cat;
     REQUIRE ( aa1 != aa2 );
 }
@@ -251,8 +256,6 @@ TEST_CASE( "Test desription of smart enums", "[description]" )
     REQUIRE( n3 == std::string("lion_description") );
     REQUIRE( n4 == std::string("horse_description") );
 
-
-
     Animal invalid(Animal::Dog);
     *(int*)&invalid = 666;
     REQUIRE_THROWS_AS( smart_enum::description(invalid), std::bad_alloc );
@@ -269,40 +272,25 @@ TEST_CASE( "Test desription of smart enums", "[description]" )
     REQUIRE( a4.description() == std::string("horse_description") );
 }
 
-/*TEST_CASE( "Base tests for smart enums", "[base]" )
+TEST_CASE( "Test is_smart_enum type_trait", "[is_smart_enum]" )
 {
-    Animal pet_0 = Animal::Dog;
-    Animal pet_1 = Animal::Horse;
+    REQUIRE( smart_enum::is_smart_enum<Animal>::value == true);
+    REQUIRE( smart_enum::is_smart_enum_v<Animal> == true);
 
-    bool cond_0 = (pet_0 == Animal::Dog);
-    bool cond_1 = (pet_1 == Animal::Horse);
-    REQUIRE( cond_0 );
-    REQUIRE( cond_1 );
+    REQUIRE( smart_enum::is_smart_enum<bool>::value == false);
+    REQUIRE( smart_enum::is_smart_enum_v<bool> == false);
 
-    std::swap(pet_0, pet_1);
-    cond_0 = (pet_0 == Animal::Horse);
-    cond_1 = (pet_1 == Animal::Dog);
-    REQUIRE( cond_0 );
-    REQUIRE( cond_1 );
+    enum Dummy {
+        d1, d2
+    };
+    REQUIRE( smart_enum::is_smart_enum<Dummy>::value == false);
+    REQUIRE( smart_enum::is_smart_enum_v<Dummy> == false);
 }
 
+/*
 
-TEST_CASE( "Test descriptions of smart enums", "[description]" )
-{
-    REQUIRE( smart_enum::get_description(Animal(Animal::Dog))   == std::string("dog_description") );
-    REQUIRE( smart_enum::get_description(Animal(Animal::Cat))   == std::string("cat") );
-    REQUIRE( smart_enum::get_description(Animal(Animal::Lion))  == std::string("Lion") );
-    REQUIRE( smart_enum::get_description(Animal(Animal::Horse)) == std::string("hOrse") );
 
-    auto str_repr_0 = smart_enum::get_enum_description<0, Animal>();
-    auto str_repr_1 = smart_enum::get_enum_description<1, Animal>();
-    auto str_repr_2 = smart_enum::get_enum_description<2, Animal>();
-    auto str_repr_3 = smart_enum::get_enum_description<3, Animal>();
-    REQUIRE( str_repr_0 == std::string("dog_description") );
-    REQUIRE( str_repr_1 == std::string("cat") );
-    REQUIRE( str_repr_2 == std::string("Lion") );
-    REQUIRE( str_repr_3 == std::string("hOrse") );
-}
+
 
 TEST_CASE( "Test string representation of smart enums", "[string]" )
 {
