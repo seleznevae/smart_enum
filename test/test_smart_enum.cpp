@@ -287,6 +287,34 @@ TEST_CASE( "Test is_smart_enum type_trait", "[is_smart_enum]" )
     REQUIRE( smart_enum::is_smart_enum_v<Dummy> == false);
 }
 
+TEST_CASE( "Test enum_cast", "[enum_cast]" )
+{
+    Animal a1 = smart_enum::enum_cast<Animal>(1);
+    Animal a2 = smart_enum::enum_cast<Animal>(2);
+    Animal a3 = smart_enum::enum_cast<Animal>(3);
+    Animal a4 = smart_enum::enum_cast<Animal>(5);
+
+    REQUIRE( a1 == Animal(Animal::Dog));
+    REQUIRE( a2 == Animal(Animal::Cat));
+    REQUIRE( a3 == Animal(Animal::Lion));
+    REQUIRE( a4 == Animal(Animal::Horse));
+
+    int  i = smart_enum::enum_cast<int>(Animal(Animal::Horse));
+    long l = smart_enum::enum_cast<long>(Animal(Animal::Horse));
+    char c = smart_enum::enum_cast<char>(Animal(Animal::Horse));
+
+    REQUIRE( i == 5 );
+    REQUIRE( l == 5 );
+    REQUIRE( c == 5 );
+
+    // doesn't compile as it should be
+//    auto  invalid1 = smart_enum::enum_cast<double>(Animal(Animal::Horse));
+//    auto  invalid2 = smart_enum::enum_cast<Animal>(1.2);
+}
+
+
+
+
 /*
 
 

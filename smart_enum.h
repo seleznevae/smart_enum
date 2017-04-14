@@ -102,9 +102,51 @@ struct is_smart_enum<T, typename smart_enum::detail::void_t<typename T::is_smart
 
 
 template <typename T>
-bool is_smart_enum_v = smart_enum::is_smart_enum<T>::value;
+constexpr bool is_smart_enum_v = smart_enum::is_smart_enum<T>::value;
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+namespace detail
+{
+    template <typename T, typename U, bool is_T_integral, bool is_T_smart_enum>
+    struct enum_cast_impl {
+        static_assert((smart_enum::is_smart_enum_v<U> || std::is_integral<T>::value)
+                      && (smart_enum::is_smart_enum_v<T> || std::is_integral<U>::value),
+                      "Argument and return value of smart_enum::enum_cast should be an integral or"
+                      " a smart enum");
+    };
+
+    template <typename T, typename U>
+    struct enum_cast_impl<T, U, false, true> {
+        static_assert((smart_enum::is_smart_enum_v<U> || std::is_integral<U>::value)
+                      && (smart_enum::is_smart_enum_v<T> || std::is_integral<T>::value),
+                      "Argument and return value of smart_enum::enum_cast should be an integral or"
+                      " a smart enum");
+        static constexpr T enum_cast(U value)
+            {   return T(typename T::InternHelpType{static_cast<typename T::value_t>(value)}); }
+    };
+
+    template <typename T, typename U>
+    struct enum_cast_impl<T, U, true, false> {
+        static_assert((smart_enum::is_smart_enum_v<U> || std::is_integral<U>::value)
+                      && (smart_enum::is_smart_enum_v<T> || std::is_integral<T>::value),
+                      "Argument and return value of smart_enum::enum_cast should be an integral or"
+                      " a smart enum");
+        static constexpr T enum_cast(U value)
+            {   return static_cast<T>(value.enum_member.value); }
+    };
+
+}
 
 
+template <typename T, typename U>
+constexpr T enum_cast(U value)
+{
+    return detail::enum_cast_impl<T, U,
+                                    std::is_integral<T>::value,
+                                    smart_enum::is_smart_enum_v<T>
+                                 >::enum_cast(value);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 namespace detail
