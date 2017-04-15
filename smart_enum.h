@@ -122,8 +122,13 @@ namespace detail
                       && (smart_enum::is_smart_enum_v<T> || std::is_integral<T>::value),
                       "Argument and return value of smart_enum::enum_cast should be an integral or"
                       " a smart enum");
-        static constexpr T enum_cast(U value)
-            {   return T(typename T::InternHelpType{static_cast<typename T::value_t>(value)}); }
+        static constexpr T enum_cast(U value, bool *ok = nullptr)
+        {
+            T result(typename T::InternHelpType{static_cast<typename T::value_t>(value)});
+            if (ok)
+                *ok = result.check();
+            return result;
+        }
     };
 
     template <typename T, typename U>
@@ -132,20 +137,24 @@ namespace detail
                       && (smart_enum::is_smart_enum_v<T> || std::is_integral<T>::value),
                       "Argument and return value of smart_enum::enum_cast should be an integral or"
                       " a smart enum");
-        static constexpr T enum_cast(U value)
-            {   return static_cast<T>(value.enum_member.value); }
+        static constexpr T enum_cast(U value, bool *ok = nullptr)
+        {
+            if (ok)
+                *ok = true;
+            return static_cast<T>(value.enum_member.value);
+        }
     };
 
 }
 
 
 template <typename T, typename U>
-constexpr T enum_cast(U value)
+constexpr T enum_cast(U value, bool *ok = nullptr)
 {
     return detail::enum_cast_impl<T, U,
                                     std::is_integral<T>::value,
                                     smart_enum::is_smart_enum_v<T>
-                                 >::enum_cast(value);
+                                 >::enum_cast(value, ok);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +482,7 @@ struct AAA_base {
   template <typename U = underl_t>
   constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); }
   template <typename U>
-  static constexpr T from_integral(U integr_v) { return smart_enum::enum_cast<T>(integr_v); }
+  static constexpr T from_integral(U integr_v, bool *ok = nullptr) { return smart_enum::enum_cast<T>(integr_v, ok); }
 };
 
 
@@ -548,7 +557,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       template <typename U = underl_t> \
       constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); } \
       template <typename U> \
-      static constexpr T from_integral(U integr_v) { return smart_enum::enum_cast<T>(integr_v); } \
+      static constexpr T from_integral(U integr_v, bool *ok = nullptr) { return smart_enum::enum_cast<T>(integr_v, ok); } \
     };\
     \
 template <int k> \
