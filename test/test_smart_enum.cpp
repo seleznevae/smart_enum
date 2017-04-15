@@ -89,6 +89,14 @@ TEST_CASE("Namespace tests", "[namespace]")
     (void)c4;
 }
 
+//class TestClass
+//{
+//    SMART_ENUM(Color2, int) {
+//         SM_ENUM_ELEM4(Red2 ,    1,  "Red"  , "Red")
+//         SM_ENUM_ELEM4(Blue2,    2,  "Blue" , "Blue")
+//    };
+//};
+
 TEST_CASE( "Size tests", "[size]" )
 {
     // enum size testing
@@ -325,7 +333,9 @@ TEST_CASE( "Test enum_cast", "[enum_cast]" )
 
     //constexpr checking
     constexpr short sh = Animal(Animal::Dog).to_integral();
+    REQUIRE (sh == 1);
     constexpr Animal an_dog = Animal::from_integral(1);
+    REQUIRE (an_dog == a1);
 
     // doesn't compile as it should be
 //    auto  invalid1 = smart_enum::enum_cast<double>(Animal(Animal::Horse));
