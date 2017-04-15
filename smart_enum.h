@@ -470,6 +470,10 @@ struct AAA_base {
   constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }
   constexpr const char* to_string(bool *ok = nullptr)const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }
   constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }
+  template <typename U = underl_t>
+  constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); }
+  template <typename U>
+  static constexpr T from_integral(U integr_v) { return smart_enum::enum_cast<T>(integr_v); }
 };
 
 
@@ -541,6 +545,10 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1>:
       constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }\
       constexpr const char* to_string(bool *ok = nullptr) const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }\
       constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }\
+      template <typename U = underl_t> \
+      constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); } \
+      template <typename U> \
+      static constexpr T from_integral(U integr_v) { return smart_enum::enum_cast<T>(integr_v); } \
     };\
     \
 template <int k> \
