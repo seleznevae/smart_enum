@@ -519,7 +519,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
     };
     constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem0 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 
-    using BaseClass_enum_elem1 = CCC_base<SmartEnumMutualAlias<base_value - 1, DummyInt>, base_value>;
+    using BaseClass_enum_elem1 = CCC_base<SmartEnumMutualAlias<base_value, DummyInt>, base_value>;
     static constexpr InternHelpType enum_elem1 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(9);
     template <int, int dummy>
     struct ClassToSpec;
@@ -534,18 +534,18 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
 
 
     //default_value
-//    using BaseClass_enum_elem2 = CCC_base<SmartEnumMutualAlias<base_value - 1, DummyInt>, base_value>;
-//    static constexpr  underl_t AAA_counter_enum_elem2 = __COUNTER__ - 6;
-//    static constexpr InternHelpType enum_elem2 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(ClassToSpec<AAA_counter_enum_elem2, 0>::value);
-//    template <int, int dummy>
-//    struct ClassToSpec;
-//    template <int dummy>
-//    struct ClassToSpec<AAA_counter_enum_elem2, dummy> {
-//        static constexpr underl_t value = static_cast<underl_t>(enum_elem2.value);
-//        static constexpr auto name() { return "enum_elem2_name"; }
-//        static constexpr auto description() { return "enum_elem2_description"; }
-//    };
-//    constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem2 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
+    using BaseClass_enum_elem2 = CCC_base<SmartEnumMutualAlias<base_value - 1, DummyInt>, base_value>;
+    static constexpr  underl_t AAA_counter_enum_elem2 = __COUNTER__ - 6;
+    static constexpr InternHelpType enum_elem2 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(ClassToSpec<AAA_counter_enum_elem2 - 1, 0>::value + 1);
+    template <int, int dummy>
+    struct ClassToSpec;
+    template <int dummy>
+    struct ClassToSpec<AAA_counter_enum_elem2, dummy> {
+        static constexpr underl_t value = static_cast<underl_t>(enum_elem2.value);
+        static constexpr auto name() { return "enum_elem2_name"; }
+        static constexpr auto description() { return "enum_elem2_description"; }
+    };
+    constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem2 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 };
 
 

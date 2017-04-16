@@ -402,6 +402,9 @@ TEST_CASE( "Test enum_cast", "[enum_cast]" )
     REQUIRE (2 == col1.to_integral());
 
 
+    test_nms::test_class::CCC col2(test_nms::test_class::CCC::enum_elem2);
+    REQUIRE (10 == col2.to_integral());
+
     // doesn't compile as it should be
 //    auto  invalid1 = smart_enum::enum_cast<double>(Animal(Animal::Horse));
 //    auto  invalid2 = smart_enum::enum_cast<Animal>(1.2);
