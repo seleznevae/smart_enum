@@ -176,6 +176,10 @@ TEST_CASE( "Index tests", "[index]" )
     REQUIRE ( a3.index() == 2 );
     REQUIRE ( a4.index() == 3 );
 
+    test_nms::TestClass::Color c1(test_nms::TestClass::Color::Blue);
+    REQUIRE ( smart_enum::index_of(c1) == 1 );
+    REQUIRE ( c1.index() == 1 );
+
     *(int*)&a1 = 666;
     REQUIRE ( smart_enum::index_of(a1) == -1 );
     REQUIRE ( a1.index() == -1 );
@@ -194,6 +198,15 @@ TEST_CASE( "Values tests", "[values]" )
 
     REQUIRE ( values           == correct_values );
     REQUIRE ( Animal::values() == correct_values );
+
+    constexpr auto color_values = smart_enum::values<test_nms::TestClass::Color>();
+    std::array<test_nms::TestClass::Color, 2> correct_color_values = {
+                                            test_nms::TestClass::Color::Red,
+                                            test_nms::TestClass::Color::Blue,
+                                            };
+
+    REQUIRE ( color_values                         == correct_color_values );
+    REQUIRE ( test_nms::TestClass::Color::values() == correct_color_values );
 }
 
 
@@ -204,16 +217,20 @@ TEST_CASE( "Names tests", "[namees]" )
     for (size_t i = 0; i < names.size(); ++i)
         str_names[i] = names[i];
     std::array<std::string, 6> correct_names = {"dog", "cat", "Lion", "horse", "tiger", "Monkey"};
-
-
     REQUIRE ( str_names == correct_names );
 
 
     constexpr auto names2 = Animal::names();
     for (size_t i = 0; i < names2.size(); ++i)
         str_names[i] = names2[i];
-
     REQUIRE ( str_names == correct_names );
+
+    constexpr auto color_names = smart_enum::names<test_nms::TestClass::Color>();
+    std::array<std::string, 2> str_color_names;
+    for (size_t i = 0; i < color_names.size(); ++i)
+        str_color_names[i] = color_names[i];
+    std::array<std::string, 2> correct_color_names = {"Red", "Blue"};
+    REQUIRE ( str_color_names == correct_color_names );
 }
 
 TEST_CASE( "descriptions tests", "[descriptions]" )
@@ -234,8 +251,14 @@ TEST_CASE( "descriptions tests", "[descriptions]" )
     constexpr auto descriptions2 = Animal::descriptions();
     for (size_t i = 0; i < descriptions2.size(); ++i)
         str_descriptions[i] = descriptions2[i];
-
     REQUIRE ( str_descriptions == correct_descriptions );
+
+    constexpr auto color_descriptions = smart_enum::descriptions<test_nms::TestClass::Color>();
+    std::array<std::string, 2> str_color_descriptions;
+    for (size_t i = 0; i < color_descriptions.size(); ++i)
+        str_color_descriptions[i] = color_descriptions[i];
+    std::array<std::string, 2> correct_color_descriptions = {"Red", "Blue"};
+    REQUIRE ( str_color_descriptions == correct_color_descriptions );
 }
 
 TEST_CASE( "Test string representation of smart enums", "[to_string]" )
@@ -269,6 +292,12 @@ TEST_CASE( "Test string representation of smart enums", "[to_string]" )
     REQUIRE( a2.to_string() == std::string("cat") );
     REQUIRE( a3.to_string() == std::string("Lion") );
     REQUIRE( a4.to_string() == std::string("horse") );
+
+
+    constexpr const char* col1 = smart_enum::to_string(test_nms::TestClass::Color(test_nms::TestClass::Color::Red));
+    REQUIRE( col1 == std::string("Red") );
+    constexpr const char* col2 = smart_enum::to_string(test_nms::TestClass::Color(test_nms::TestClass::Color::Blue));
+    REQUIRE( col2 == std::string("Blue") );
 }
 
 TEST_CASE( "Test desription of smart enums", "[description]" )
@@ -302,6 +331,11 @@ TEST_CASE( "Test desription of smart enums", "[description]" )
     REQUIRE( a2.description() == std::string("cat_description") );
     REQUIRE( a3.description() == std::string("lion_description") );
     REQUIRE( a4.description() == std::string("horse_description") );
+
+    constexpr const char* col_desc_1 = smart_enum::description(test_nms::TestClass::Color(test_nms::TestClass::Color::Red));
+    REQUIRE( col_desc_1 == std::string("Red") );
+    constexpr const char* col_desc_2 = smart_enum::description(test_nms::TestClass::Color(test_nms::TestClass::Color::Blue));
+    REQUIRE( col_desc_2 == std::string("Blue") );
 }
 
 TEST_CASE( "Test is_smart_enum type_trait", "[is_smart_enum]" )
@@ -317,6 +351,9 @@ TEST_CASE( "Test is_smart_enum type_trait", "[is_smart_enum]" )
     };
     REQUIRE( smart_enum::is_smart_enum<Dummy>::value == false);
     REQUIRE( smart_enum::is_smart_enum_v<Dummy> == false);
+
+
+    REQUIRE( smart_enum::is_smart_enum<test_nms::TestClass::Color>::value == true);
 }
 
 TEST_CASE( "Test enum_cast", "[enum_cast]" )
@@ -361,8 +398,9 @@ TEST_CASE( "Test enum_cast", "[enum_cast]" )
     constexpr Animal an_dog = Animal::from_integral(1);
     REQUIRE (an_dog == a1);
 
+    test_nms::TestClass::Color col1(test_nms::TestClass::Color::Blue);
+    REQUIRE (2 == col1.to_integral());
 
-//    auto val = test_nms::test_class::CCC(test_nms::test_class::CCC::enum_elem1).to_integral();
 
     // doesn't compile as it should be
 //    auto  invalid1 = smart_enum::enum_cast<double>(Animal(Animal::Horse));
