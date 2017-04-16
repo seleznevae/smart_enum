@@ -50,14 +50,14 @@ TEST_CASE( "Base tests", "[base]" )
 
 
 
-    nms::some_struct::BBB b1 = nms::some_struct::BBB::enum_elem0;
-    nms::some_struct::BBB b2 = {nms::some_struct::BBB::enum_elem0};
-    nms::some_struct::BBB b3 (nms::some_struct::BBB::enum_elem0);
-    nms::some_struct::BBB b4 {nms::some_struct::BBB::enum_elem0};
+//    nms::some_struct::BBB b1 = nms::some_struct::BBB::enum_elem0;
+//    nms::some_struct::BBB b2 = {nms::some_struct::BBB::enum_elem0};
+//    nms::some_struct::BBB b3 (nms::some_struct::BBB::enum_elem0);
+//    nms::some_struct::BBB b4 {nms::some_struct::BBB::enum_elem0};
 
 
-    aaaa::TestClass2::CCC b5 {aaaa::TestClass2::CCC::enum_elem0};
-    b1 != b2;
+////    aaaa::TestClass2::CCC b5 {aaaa::TestClass2::CCC::enum_elem0};
+////    b1 != b2;
 }
 
 
@@ -79,16 +79,23 @@ TEST_CASE( "Switch-case tests", "[switch]")
     REQUIRE (is_result_ok == true);
 }
 
-//namespace tests
+//namespace and inside class tests
 namespace test_nms
 {
     SMART_ENUM(Color, int) {
          SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red")
          SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue")
     };
+
+    struct TestClass {
+        SMART_ENUM(Color, int) {
+             SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red")
+             SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue")
+        };
+    };
 }
 
-TEST_CASE("Namespace tests", "[namespace]")
+TEST_CASE("Namespace and inside class tests", "[namespace]")
 {
     test_nms::Color c1(test_nms::Color::Red);
     test_nms::Color c2{test_nms::Color::Red};
@@ -99,15 +106,19 @@ TEST_CASE("Namespace tests", "[namespace]")
     (void)c2;
     (void)c3;
     (void)c4;
+
+    test_nms::TestClass::Color cc1(test_nms::TestClass::Color::Red);
+    test_nms::TestClass::Color cc2{test_nms::TestClass::Color::Red};
+    test_nms::TestClass::Color cc3 = {test_nms::TestClass::Color::Red};
+    test_nms::TestClass::Color cc4 = test_nms::TestClass::Color::Red;
+
+    (void)cc1;
+    (void)cc2;
+    (void)cc3;
+    (void)cc4;
 }
 
-//class TestClass
-//{
-//    SMART_ENUM(Color2, int) {
-//         SM_ENUM_ELEM4(Red2 ,    1,  "Red"  , "Red")
-//         SM_ENUM_ELEM4(Blue2,    2,  "Blue" , "Blue")
-//    };
-//};
+
 
 TEST_CASE( "Size tests", "[size]" )
 {
