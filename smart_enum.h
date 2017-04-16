@@ -538,6 +538,8 @@ struct SmartEnumMutualAlias222<SmartEnumMutualAlias222_BBB1, DummyInt>:
 ///
 namespace aaaa{
 struct TestClass2 {
+
+
 template <typename T>
 struct CCC_base {
   using underl_t = int;
@@ -546,7 +548,7 @@ struct CCC_base {
   using value_t = internal_enum_t;
 
   constexpr CCC_base(internal_enum_t member_): enum_member(member_) { }
-  static constexpr int base_value = __COUNTER__;
+  static constexpr auto base_value = __COUNTER__;
 
   // constructor helper
   template <underl_t k>
@@ -578,14 +580,13 @@ struct CCC_base {
   template <typename U>
   static constexpr T from_integral(U integr_v, bool *ok = nullptr) { return smart_enum::enum_cast<T>(integr_v, ok); }
 
-  static constexpr auto SmartEnumMutualAlias222_CCC1_Internal = __COUNTER__;
 };
 
 template <int k, int DummyInt>
 struct SmartEnumMutualAlias333;
 
-using CCC = SmartEnumMutualAlias333<__COUNTER__ -1 , 0>;
-static constexpr size_t SmartEnumMutualAlias222_CCC1 = __COUNTER__ - 2;
+using CCC = SmartEnumMutualAlias333<__COUNTER__, 0>;
+static constexpr size_t SmartEnumMutualAlias222_CCC1 = __COUNTER__ - 1;
 
 //template <int DummyInt>
 
@@ -594,11 +595,11 @@ template <int DummyInt>
 struct SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1, DummyInt>:
         public CCC_base<SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1, 0>>{
 
-    using BaseClass_enum_elem0 = CCC_base<SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1_Internal, DummyInt>>;
+    using BaseClass_enum_elem0 = CCC_base<SmartEnumMutualAlias333<base_value + 1, DummyInt>>;
     static constexpr InternHelpType enum_elem0 = static_cast<typename BaseClass_enum_elem0::internal_enum_t>(4);
     template <int, int dummy>
     struct ClassToSpec;
-    static constexpr underl_t AAA_counter_enum_elem0 = __COUNTER__ - 3;
+    static constexpr underl_t AAA_counter_enum_elem0 = __COUNTER__ - 2;
     template <int dummy>
     struct ClassToSpec<AAA_counter_enum_elem0, dummy> {
         static constexpr underl_t value = static_cast<underl_t>(enum_elem0.value);
@@ -608,11 +609,11 @@ struct SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1, DummyInt>:
     constexpr SmartEnumMutualAlias333(HelperClass<AAA_counter_enum_elem0 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 //    constexpr SmartEnumMutualAlias(BaseType b): BaseType(static_cast<internal_enum_t>(b.enum_member.value)) {}
 
-    using BaseClass_enum_elem1 = CCC_base<SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1_Internal, DummyInt>>;
+    using BaseClass_enum_elem1 = CCC_base<SmartEnumMutualAlias333<base_value + 1, DummyInt>>;
     static constexpr InternHelpType enum_elem1 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(9);
     template <int, int dummy>
     struct ClassToSpec;
-    static constexpr  underl_t AAA_counter_enum_elem1 = __COUNTER__ - 3;
+    static constexpr  underl_t AAA_counter_enum_elem1 = __COUNTER__ - 2;
     template <int dummy>
     struct ClassToSpec<AAA_counter_enum_elem1, dummy> {
         static constexpr underl_t value = static_cast<underl_t>(enum_elem1.value);
@@ -623,6 +624,8 @@ struct SmartEnumMutualAlias333<SmartEnumMutualAlias222_CCC1, DummyInt>:
 };
 };
 }
+
+
 //////////////////////////////////////////////////////////////////////////////
 template <typename T>
 struct AAA_base {
