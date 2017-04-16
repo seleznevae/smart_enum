@@ -54,6 +54,7 @@ TEST_CASE( "Base tests", "[base]" )
     nms::some_struct::BBB b2 = {nms::some_struct::BBB::enum_elem0};
     nms::some_struct::BBB b3 (nms::some_struct::BBB::enum_elem0);
     nms::some_struct::BBB b4 {nms::some_struct::BBB::enum_elem0};
+    b1 != b2;
 }
 
 

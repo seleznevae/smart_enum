@@ -475,7 +475,19 @@ struct BBB_base {
   using BaseType = BBB_base<T>;
   using is_smart_enum = std::true_type;
 
+  static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
   constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
+  constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }
+  constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }
+  constexpr static auto  values() { return smart_enum::values<T>(); }
+  constexpr static auto  names() { return smart_enum::names<T>(); }
+  constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }
+  constexpr const char* to_string(bool *ok = nullptr)const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }
+  constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }
+  template <typename U = underl_t>
+  constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); }
+  template <typename U>
+  static constexpr T from_integral(U integr_v, bool *ok = nullptr) { return smart_enum::enum_cast<T>(integr_v, ok); }
 };
 
 template <int k, int DummyInt>
