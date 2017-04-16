@@ -22,9 +22,9 @@ SMART_ENUM(Animal, int) {
      SM_ENUM_ELEM(Monkey,20)
 };
 
-SMART_ENUM(ABCDE, int) {
-     SM_ENUM_ELEM(Dog3,    88,  "dog"  , "dog_description")
-     SM_ENUM_ELEM(Cat3,    99,  "cat"  , "cat_description")
+SMART_ENUM(Animal2, int) {
+     SM_ENUM_ELEM(Dog2,    88,  "dog"  , "dog_description")
+     SM_ENUM_ELEM(Cat2,    99,  "cat"  , "cat_description")
 };
 
 TEST_CASE( "Base tests", "[base]" )
@@ -32,7 +32,7 @@ TEST_CASE( "Base tests", "[base]" )
     //constructors testing
     Animal aa1(Animal::Dog);
     Animal aa2{Animal::Dog};
-    Animal aa3 = {Animal::Dog};
+    Animal aa3 = Animal{Animal::Dog};
     Animal aa4 = Animal(Animal::Dog);
 
     (void)aa1;
@@ -56,15 +56,6 @@ TEST_CASE( "Base tests", "[base]" )
 
 
 
-
-//    nms::some_struct::BBB b1 = nms::some_struct::BBB::enum_elem0;
-//    nms::some_struct::BBB b2 = {nms::some_struct::BBB::enum_elem0};
-//    nms::some_struct::BBB b3 (nms::some_struct::BBB::enum_elem0);
-//    nms::some_struct::BBB b4 {nms::some_struct::BBB::enum_elem0};
-
-
-////    aaaa::TestClass2::CCC b5 {aaaa::TestClass2::CCC::enum_elem0};
-////    b1 != b2;
 }
 
 
