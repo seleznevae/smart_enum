@@ -602,4 +602,19 @@ struct SmartEnumMutualAlias<__COUNTER__ - 1, DummyInt>: \
     constexpr SmartEnumMutualAlias(HelperClass<counter_enum_##elem_id - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 
 
+#define SM_ENUM_ELEM3_(elem_id, elem_value, elem_name)\
+    SM_ENUM_ELEM4(elem_id, elem_value,elem_name,elem_name)
+
+#define SM_ENUM_ELEM3(elem_id, elem_value, elem_name)\
+    SM_ENUM_ELEM3_(elem_id, elem_value, elem_name)
+
+#define SM_ENUM_ELEM2_(elem_id, elem_value)\
+    SM_ENUM_ELEM3(elem_id, elem_value, #elem_id)
+
+#define SM_ENUM_ELEM2(elem_id, elem_value)\
+    SM_ENUM_ELEM2_(elem_id, elem_value)
+
+#define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
+#define SM_ENUM_ELEM(...) GET_MACRO(__VA_ARGS__, SM_ENUM_ELEM4, SM_ENUM_ELEM3, SM_ENUM_ELEM2)(__VA_ARGS__)
+
 #endif // SMART_ENUM_H

@@ -14,10 +14,12 @@ using namespace std;
 
 
 SMART_ENUM(Animal, int) {
-     SM_ENUM_ELEM4(Dog,    1,  "dog"  , "dog_description")
-     SM_ENUM_ELEM4(Cat,    2,  "cat"  , "cat_description")
-     SM_ENUM_ELEM4(Lion,   3,  "Lion" , "lion_description")
-     SM_ENUM_ELEM4(Horse,  5,  "horse", "horse_description")
+     SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description")
+     SM_ENUM_ELEM(Cat,    2,  "cat"  , "cat_description")
+     SM_ENUM_ELEM(Lion,   3,  "Lion" , "lion_description")
+     SM_ENUM_ELEM(Horse,  5,  "horse", "horse_description")
+     SM_ENUM_ELEM(Tiger, 10,  "tiger")
+     SM_ENUM_ELEM(Monkey, 20)
 };
 
 TEST_CASE( "Base tests", "[base]" )
@@ -127,7 +129,7 @@ TEST_CASE( "Size tests", "[size]" )
     REQUIRE( sizeof(Animal::Dog) == sizeof(int) );
 
     // number of element in enum testing
-    REQUIRE( Animal::enum_size() == 4          );
+    REQUIRE( Animal::enum_size() == 6          );
 }
 
 
@@ -191,7 +193,12 @@ TEST_CASE( "Index tests", "[index]" )
 TEST_CASE( "Values tests", "[values]" )
 {
     constexpr auto values = smart_enum::values<Animal>();
-    std::array<Animal, 4> correct_values = {Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse};
+    std::array<Animal, 6> correct_values = {Animal::Dog,
+                                            Animal::Cat,
+                                            Animal::Lion,
+                                            Animal::Horse,
+                                            Animal::Tiger,
+                                            Animal::Monkey};
 
     REQUIRE ( values           == correct_values );
     REQUIRE ( Animal::values() == correct_values );
@@ -201,10 +208,10 @@ TEST_CASE( "Values tests", "[values]" )
 TEST_CASE( "Names tests", "[namees]" )
 {
     constexpr auto names = smart_enum::names<Animal>();
-    std::array<std::string, 4> str_names;
+    std::array<std::string, 6> str_names;
     for (size_t i = 0; i < names.size(); ++i)
         str_names[i] = names[i];
-    std::array<std::string, 4> correct_names = {"dog", "cat", "Lion", "horse"};
+    std::array<std::string, 6> correct_names = {"dog", "cat", "Lion", "horse", "tiger", "Monkey"};
 
 
     REQUIRE ( str_names == correct_names );
@@ -220,13 +227,15 @@ TEST_CASE( "Names tests", "[namees]" )
 TEST_CASE( "descriptions tests", "[descriptions]" )
 {
     constexpr auto descriptions = smart_enum::descriptions<Animal>();
-    std::array<std::string, 4> str_descriptions;
+    std::array<std::string, 6> str_descriptions;
     for (size_t i = 0; i < descriptions.size(); ++i)
         str_descriptions[i] = descriptions[i];
-    std::array<std::string, 4> correct_descriptions = {"dog_description",
+    std::array<std::string, 6> correct_descriptions = {"dog_description",
                                                        "cat_description",
                                                        "lion_description",
-                                                       "horse_description"};
+                                                       "horse_description",
+                                                       "tiger",
+                                                       "Monkey"};
 
     REQUIRE ( str_descriptions == correct_descriptions );
 
