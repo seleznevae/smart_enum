@@ -46,6 +46,14 @@ TEST_CASE( "Base tests", "[base]" )
 
     aa1 = Animal::Cat;
     REQUIRE ( aa1 != aa2 );
+
+
+
+
+    nms::some_struct::BBB b1 = nms::some_struct::BBB::enum_elem0;
+    nms::some_struct::BBB b2 = {nms::some_struct::BBB::enum_elem0};
+    nms::some_struct::BBB b3 (nms::some_struct::BBB::enum_elem0);
+    nms::some_struct::BBB b4 {nms::some_struct::BBB::enum_elem0};
 }
 
 
