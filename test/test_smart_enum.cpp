@@ -13,7 +13,7 @@
 using namespace std;
 
 
-SMART_ENUM(Animal, int) {
+SMART_ENUM(Animal) {
      SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description")
      SM_ENUM_ELEM(Cat,    2,  "cat"  , "cat_description")
      SM_ENUM_ELEM(Lion,   3,  "Lion" , "lion_description")
@@ -23,7 +23,7 @@ SMART_ENUM(Animal, int) {
      SM_ENUM_ELEM(Cow)
 };
 
-SMART_ENUM(Animal2, int) {
+SMART_ENUM(Animal2, unsigned short) {
      SM_ENUM_ELEM(Dog2,    88,  "dog"  , "dog_description")
      SM_ENUM_ELEM(Cat2,    99,  "cat"  , "cat_description")
 };
@@ -55,8 +55,10 @@ TEST_CASE( "Base tests", "[base]" )
     aa1 = Animal::Cat;
     REQUIRE ( aa1 != aa2 );
 
-
-
+    bool is_animal_und_type_cor = std::is_same<Animal::underl_t, int>::value;
+    REQUIRE ( is_animal_und_type_cor == true);
+    bool is_animal2_und_type_cor = std::is_same<Animal2::underl_t, unsigned short>::value;
+    REQUIRE ( is_animal2_und_type_cor == true);
 }
 
 
@@ -82,14 +84,14 @@ TEST_CASE( "Switch-case tests", "[switch]")
 namespace test_nms
 {
     SMART_ENUM(Color, int) {
-         SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red")
-         SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue")
+         SM_ENUM_ELEM(Red ,    1,  "Red"  , "Red")
+         SM_ENUM_ELEM(Blue,    2,  "Blue" , "Blue")
     };
 
     struct TestClass {
         SMART_ENUM(Color, int) {
-             SM_ENUM_ELEM4(Red ,    1,  "Red"  , "Red")
-             SM_ENUM_ELEM4(Blue,    2,  "Blue" , "Blue")
+             SM_ENUM_ELEM(Red ,    1,  "Red"  , "Red")
+             SM_ENUM_ELEM(Blue,    2,  "Blue" , "Blue")
         };
     };
 }

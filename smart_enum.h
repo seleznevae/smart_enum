@@ -556,7 +556,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
 //////////////////////////////////////////////////////////////////////////////
 
 
-#define SMART_ENUM(enum_name,enum_und_type) \
+#define SMART_ENUM2(enum_name,enum_und_type) \
     template <typename T, ssize_t BaseValue>\
     struct smart_enum_base;\
     template <typename T>\
@@ -605,9 +605,12 @@ template <int DummyInt> \
 struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
         public smart_enum_base<SmartEnumMutualAlias<__COUNTER__ - 5, 0>, __COUNTER__ - 6>
 
+#define SMART_ENUM1_(enum_name) \
+    SMART_ENUM2(enum_name, int)
+#define SMART_ENUM1(enum_name) \
+    SMART_ENUM1_(enum_name)
 
-
-#define SM_ENUM_ELEM4(elem_id, elem_value, elem_name, elem_description)\
+#define SMART_ENUM_ELEM4(elem_id, elem_value, elem_name, elem_description)\
 \
     using BaseClass_##elem_id = smart_enum_base<SmartEnumMutualAlias<base_value, DummyInt>, base_value>;\
     static constexpr underl_t counter_enum_##elem_id = __COUNTER__ - 6;\
@@ -623,25 +626,27 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
     constexpr SmartEnumMutualAlias(HelperClass<counter_enum_##elem_id - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
 
 
-#define SM_ENUM_ELEM3_(elem_id, elem_value, elem_name)\
-    SM_ENUM_ELEM4(elem_id, elem_value,elem_name,elem_name)
+#define SMART_ENUM_ELEM3_(elem_id, elem_value, elem_name)\
+    SMART_ENUM_ELEM4(elem_id, elem_value,elem_name,elem_name)
 
-#define SM_ENUM_ELEM3(elem_id, elem_value, elem_name)\
-    SM_ENUM_ELEM3_(elem_id, elem_value, elem_name)
+#define SMART_ENUM_ELEM3(elem_id, elem_value, elem_name)\
+    SMART_ENUM_ELEM3_(elem_id, elem_value, elem_name)
 
-#define SM_ENUM_ELEM2_(elem_id, elem_value)\
-    SM_ENUM_ELEM3(elem_id, elem_value, #elem_id)
+#define SMART_ENUM_ELEM2_(elem_id, elem_value)\
+    SMART_ENUM_ELEM3(elem_id, elem_value, #elem_id)
 
-#define SM_ENUM_ELEM2(elem_id, elem_value)\
-    SM_ENUM_ELEM2_(elem_id, elem_value)
+#define SMART_ENUM_ELEM2(elem_id, elem_value)\
+    SMART_ENUM_ELEM2_(elem_id, elem_value)
 
-#define SM_ENUM_ELEM1_(elem_id)\
-    SM_ENUM_ELEM2(elem_id, (ClassToSpec<counter_enum_##elem_id - 1, 0>::value + 1))
+#define SMART_ENUM_ELEM1_(elem_id)\
+    SMART_ENUM_ELEM2(elem_id, (ClassToSpec<counter_enum_##elem_id - 1, 0>::value + 1))
 
-#define SM_ENUM_ELEM1(elem_id)\
-    SM_ENUM_ELEM1_(elem_id)
+#define SMART_ENUM_ELEM1(elem_id)\
+    SMART_ENUM_ELEM1_(elem_id)
 
-#define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
-#define SM_ENUM_ELEM(...) GET_MACRO(__VA_ARGS__, SM_ENUM_ELEM4, SM_ENUM_ELEM3, SM_ENUM_ELEM2, SM_ENUM_ELEM1)(__VA_ARGS__)
+#define SMART_ENUM_GET_MACRO4(_1,_2,_3,_4,NAME,...) NAME
+#define SM_ENUM_ELEM(...) SMART_ENUM_GET_MACRO4(__VA_ARGS__, SMART_ENUM_ELEM4, SMART_ENUM_ELEM3, SMART_ENUM_ELEM2, SMART_ENUM_ELEM1)(__VA_ARGS__)
 
+#define SMART_ENUM_GET_MACRO2(_1,_2,NAME,...) NAME
+#define SMART_ENUM(...) SMART_ENUM_GET_MACRO2(__VA_ARGS__, SMART_ENUM2, SMART_ENUM1)(__VA_ARGS__)
 #endif // SMART_ENUM_H
