@@ -19,7 +19,12 @@ SMART_ENUM(Animal, int) {
      SM_ENUM_ELEM(Lion,   3,  "Lion" , "lion_description")
      SM_ENUM_ELEM(Horse,  5,  "horse", "horse_description")
      SM_ENUM_ELEM(Tiger, 10,  "tiger")
-     SM_ENUM_ELEM(Monkey, 20)
+     SM_ENUM_ELEM(Monkey,20)
+};
+
+SMART_ENUM(ABCDE, int) {
+     SM_ENUM_ELEM(Dog3,    88,  "dog"  , "dog_description")
+     SM_ENUM_ELEM(Cat3,    99,  "cat"  , "cat_description")
 };
 
 TEST_CASE( "Base tests", "[base]" )
