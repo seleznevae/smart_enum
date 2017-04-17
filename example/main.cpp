@@ -18,9 +18,9 @@ int main()
     Animal pet_horse = Animal::Horse;
 
     /* to string conversion */
-    std::cout << "pet name: " << smart_enum::to_string(pet_cat) << std::endl;
+    std::cout << "pet name: " << pet_cat.to_string() << std::endl;
     //pet name: cat
-    std::cout << "pet name: " << smart_enum::to_string(pet_lion) << std::endl;
+    std::cout << "pet name: " << pet_lion.to_string() << std::endl;
     //pet name: Lion
 
 
@@ -49,12 +49,12 @@ int main()
     }
 
     /* get number of declared elements in smart enum */
-    std::cout << "Elements in smart enum: " << smart_enum::enum_size<Animal>() << std::endl;
+    std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
     //Elements in smart enum: 4
 
     /* It is possible to check if data in smart enum are valid */
     Animal invalid(Animal::Cat);
     *(reinterpret_cast<int*>(&invalid)) = 6666;
-    assert(invalid.check() == false);
+    assert(invalid.is_valid() == false);
 
 }

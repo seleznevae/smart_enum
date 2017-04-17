@@ -128,7 +128,7 @@ TEST_CASE( "Size tests", "[size]" )
     REQUIRE( sizeof(Animal::Dog) == sizeof(int) );
 
     // number of element in enum testing
-    REQUIRE( Animal::enum_size() == 7          );
+    REQUIRE( Animal::size() == 7          );
 }
 
 
@@ -145,10 +145,10 @@ TEST_CASE( "Check tests", "[check]" )
     REQUIRE ( smart_enum::enum_check(a3) == true );
     REQUIRE ( smart_enum::enum_check(a4) == true );
 
-    REQUIRE ( a1.check() == true );
-    REQUIRE ( a2.check() == true );
-    REQUIRE ( a3.check() == true );
-    REQUIRE ( a4.check() == true );
+    REQUIRE ( a1.is_valid() == true );
+    REQUIRE ( a2.is_valid() == true );
+    REQUIRE ( a3.is_valid() == true );
+    REQUIRE ( a4.is_valid() == true );
 
     *(int*)&a1 = 0;
     *(int*)&a2 = 4;
@@ -156,9 +156,9 @@ TEST_CASE( "Check tests", "[check]" )
     REQUIRE ( smart_enum::enum_check(a1) == false );
     REQUIRE ( smart_enum::enum_check(a2) == false );
     REQUIRE ( smart_enum::enum_check(a3) == false );
-    REQUIRE ( a1.check() == false );
-    REQUIRE ( a2.check() == false );
-    REQUIRE ( a3.check() == false );
+    REQUIRE ( a1.is_valid() == false );
+    REQUIRE ( a2.is_valid() == false );
+    REQUIRE ( a3.is_valid() == false );
 }
 
 // index tests

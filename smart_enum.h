@@ -126,7 +126,7 @@ namespace detail
         {
             T result(typename T::InternHelpType{static_cast<typename T::value_t>(value)});
             if (ok)
-                *ok = result.check();
+                *ok = result.is_valid();
             return result;
         }
     };
@@ -530,9 +530,9 @@ struct CCC_base<T, __COUNTER__> {
   using BaseType = CCC_base<T, __COUNTER__ - 2>;
   using is_smart_enum = std::true_type;
 
-  static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }
+  static constexpr size_t size() { return smart_enum::enum_size<T>(); }
   constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }
-  constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }
+  constexpr bool is_valid() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }
   constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }
   constexpr static auto  values() { return smart_enum::values<T>(); }
   constexpr static auto  names() { return smart_enum::names<T>(); }
@@ -632,9 +632,9 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
       using BaseType = smart_enum_base<T, __COUNTER__ - 2>; \
       using is_smart_enum = std::true_type; \
     \
-      static constexpr size_t enum_size() { return smart_enum::enum_size<T>(); }\
+      static constexpr size_t size() { return smart_enum::enum_size<T>(); }\
       constexpr  operator internal_enum_t() const { return static_cast<internal_enum_t>(enum_member.value); }\
-      constexpr bool check() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }\
+      constexpr bool is_valid() const { return smart_enum::enum_check<T>(static_cast<const T&>(*this)); }\
       constexpr ssize_t index() const { return smart_enum::index_of<T>(static_cast<const T&>(*this)); }\
       constexpr static auto  values() { return smart_enum::values<T>(); } \
       constexpr static auto  names()  { return smart_enum::names<T>(); }\
