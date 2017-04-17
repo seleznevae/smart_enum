@@ -396,7 +396,7 @@ constexpr const char* to_string(EnumType enum_value, bool *ok = nullptr)
 ////////////////////////////////////////////////////////////////////////////////
 namespace detail
 {
-    int ct_strcmp(const char* lhs, const char*rhs)
+    constexpr int ct_strcmp(const char* lhs, const char*rhs)
     {
         return  (lhs[0] == rhs[0]) ? ((lhs[0] == '\0')  ? 0 : ct_strcmp(lhs + 1, rhs + 1))
                                    : ((lhs[0] > rhs[0]) ? 1 : -1);
@@ -407,10 +407,13 @@ namespace detail
         static constexpr
         SmartEnum from_string(const char* str, bool *ok = nullptr)
         {
-            return (ct_strcmp(get_name_n<SmartEnum, CurPos>(), str) == 0)
-                    ? smart_enum::get_n<SmartEnum, CurPos>()
-                    : enum_from_string_impl<SmartEnum, CurPos+1, Size>::to_string(str, ok)
-                ;
+            if (ct_strcmp(get_name_n<SmartEnum, CurPos>(), str) == 0) {
+                if (ok)
+                    *ok = true;
+                return smart_enum::get_n<SmartEnum, CurPos>();
+            } else {
+                return enum_from_string_impl<SmartEnum, CurPos+1, Size>::from_string(str, ok);
+            }
         }
     };
 
@@ -420,6 +423,8 @@ namespace detail
         static constexpr
         SmartEnum from_string(const char* /*str*/, bool *ok = nullptr)
         {
+//            return ok ? (*ok = false           , smart_enum::get_n<SmartEnum, 0>())
+//                      : (throw std::bad_alloc(), smart_enum::get_n<SmartEnum, 0>());
             if (ok)
                 *ok = false;
             else
@@ -533,6 +538,7 @@ struct CCC_base<T, __COUNTER__> {
   constexpr static auto  names() { return smart_enum::names<T>(); }
   constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }
   constexpr const char* to_string(bool *ok = nullptr)const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }
+  static constexpr T from_string(const char* str, bool *ok = nullptr) { return smart_enum::from_string<T>(str, ok); }
   constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }
   template <typename U = underl_t>
   constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); }
@@ -634,6 +640,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
       constexpr static auto  names()  { return smart_enum::names<T>(); }\
       constexpr static auto  descriptions() { return smart_enum::descriptions<T>(); }\
       constexpr const char* to_string(bool *ok = nullptr) const { return smart_enum::to_string<T>(static_cast<const T&>(*this), ok); }\
+      static constexpr T from_string(const char* str, bool *ok = nullptr) { return smart_enum::from_string<T>(str, ok); } \
       constexpr const char* description(bool *ok = nullptr)const { return smart_enum::description<T>(static_cast<const T&>(*this), ok); }\
       template <typename U = underl_t> \
       constexpr U to_integral() const { return smart_enum::enum_cast<U>(static_cast<const T&>(*this)); } \

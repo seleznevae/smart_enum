@@ -305,6 +305,48 @@ TEST_CASE( "Test string representation of smart enums", "[to_string]" )
     REQUIRE( col2 == std::string("Blue") );
 }
 
+TEST_CASE( "Test from string", "[from_string]" )
+{
+    constexpr Animal a1(Animal::Dog);
+    constexpr Animal a2(Animal::Cat);
+    constexpr Animal a3(Animal::Lion);
+    constexpr Animal a4(Animal::Horse);
+
+    constexpr Animal t1 = smart_enum::from_string<Animal>("dog");
+    constexpr Animal t2 = smart_enum::from_string<Animal>("cat");
+    constexpr Animal t3 = smart_enum::from_string<Animal>("Lion");
+    constexpr Animal t4 = smart_enum::from_string<Animal>("horse");
+
+    REQUIRE( a1 == t1 );
+    REQUIRE( a2 == t2 );
+    REQUIRE( a3 == t3 );
+    REQUIRE( a4 == t4 );
+
+    // doesn't compile as it should be
+//    constexpr Animal t5 = smart_enum::from_string<Animal>("something");
+
+    REQUIRE_THROWS_AS( smart_enum::from_string<Animal>("something"), std::bad_alloc );
+
+    bool ok = true;
+    smart_enum::from_string<Animal>("something", &ok);
+    REQUIRE( ok == false );
+    smart_enum::from_string<Animal>("Lion", &ok);
+    REQUIRE( ok == true );
+
+
+    constexpr Animal t11 = Animal::from_string("dog");
+    constexpr Animal t12 = Animal::from_string("cat");
+    constexpr Animal t13 = Animal::from_string("Lion");
+    constexpr Animal t14 = Animal::from_string("horse");
+
+    REQUIRE( a1 == t11 );
+    REQUIRE( a2 == t12 );
+    REQUIRE( a3 == t13 );
+    REQUIRE( a4 == t14 );
+}
+
+
+
 TEST_CASE( "Test desription of smart enums", "[description]" )
 {
     constexpr Animal a1(Animal::Dog);
