@@ -47,17 +47,17 @@ Animal pet_horse  {Animal::Horse};
 
 It is possible to convert smart enums to strings:
 ```c++
-std::cout << "pet name: " << smart_enum::to_string(pet_cat) << std::endl;
+std::cout << "pet name: " << pet_cat.to_string() << std::endl;
 //pet name: cat
-std::cout << "pet name: " << smart_enum::to_string(pet_lion) << std::endl;
+std::cout << "pet name: " << pet_lion.to_string() << std::endl;
 //pet name: Lion
 ```
 
 It is possible get descriptions for smart enum values:
 ```c++
-std::cout << "descr.: " << smart_enum::get_description(pet_dog) << std::endl;
+std::cout << "descr.: " << pet_dog.description() << std::endl;
 //descr.: dog_description
-std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
+std::cout << "descr.: " << pet_horse.description() << std::endl;
 //descr.: hOrse
 ```
 
@@ -77,7 +77,7 @@ switch (pet_cat) {
 ```
 It is possible to get information about number of elements declared in smart enum:
 ```c++
-std::cout << "Elements in smart enum: " << smart_enum::enum_size<Animal>() << std::endl;
+std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
 //Elements in smart enum: 4
 ```
 
@@ -85,7 +85,7 @@ It is possible to get information about number of elements declared in smart enu
 ```c++
 Animal invalid;
 *(reinterpret_cast<int*>(&invalid)) = 6666;
-assert(smart_enum::check(invalid) == false);
+assert(invalid.is_valid() == false);
 ```
 ## License
 The MIT license
