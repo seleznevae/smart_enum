@@ -25,7 +25,7 @@ int main()
 
 
     /* It is possible to get enum by name */
-    constexpr auto ct_pet_lion = Animal::from_string("Lion");
+    constexpr Animal ct_pet_lion = Animal::from_string("Lion");
 
 
     /* get description for smart enum */
@@ -38,13 +38,13 @@ int main()
     /* usage in case statements */
     switch (pet_cat) {
         case Animal::Cat:
-            assert(true);
+            //do_something
             break;
         case Animal::Horse:
-            assert(false);
+            //do_something
             break;
         default:
-            assert(false);
+            //do_something
             break;
     }
 
