@@ -5,7 +5,7 @@
 - [Examples](#examples)
 - [License](#license)
 
-Smart enum is a short library for smart enums in C++.
+Header-only library for compile-time C++ enum introspection.
 
 ## Design goals
 
