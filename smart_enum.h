@@ -393,8 +393,52 @@ constexpr const char* to_string(EnumType enum_value, bool *ok = nullptr)
                                         >::to_string(index);
 
 }
+////////////////////////////////////////////////////////////////////////////////
+namespace detail
+{
+    int ct_strcmp(const char* lhs, const char*rhs)
+    {
+        return  (lhs[0] == rhs[0]) ? ((lhs[0] == '\0')  ? 0 : ct_strcmp(lhs + 1, rhs + 1))
+                                   : ((lhs[0] > rhs[0]) ? 1 : -1);
+    }
 
+    template <typename SmartEnum, size_t CurPos, size_t Size>
+    struct enum_from_string_impl {
+        static constexpr
+        SmartEnum from_string(const char* str, bool *ok = nullptr)
+        {
+            return (ct_strcmp(get_name_n<SmartEnum, CurPos>(), str) == 0)
+                    ? smart_enum::get_n<SmartEnum, CurPos>()
+                    : enum_from_string_impl<SmartEnum, CurPos+1, Size>::to_string(str, ok)
+                ;
+        }
+    };
 
+    template <typename SmartEnum, size_t Size>
+    struct enum_from_string_impl<SmartEnum, Size, Size>
+    {
+        static constexpr
+        SmartEnum from_string(const char* /*str*/, bool *ok = nullptr)
+        {
+            if (ok)
+                *ok = false;
+            else
+                throw std::bad_alloc();
+            return smart_enum::get_n<SmartEnum, 0>();
+        }
+    };
+}
+
+template <typename EnumType>
+constexpr EnumType from_string(const char*str, bool *ok = nullptr)
+{
+
+    return detail::enum_from_string_impl< EnumType,
+                                        0,
+                                        smart_enum::enum_size<EnumType>()
+                                        >::from_string(str, ok);
+
+}
 /////////////////////////////////////////////////////////////////////////////////
 namespace detail
 {
