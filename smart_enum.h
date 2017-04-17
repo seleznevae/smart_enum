@@ -39,6 +39,8 @@ SOFTWARE.
 #include <type_traits>
 #include <array>
 
+
+#pragma GCC diagnostic ignored "-Wswitch"
 namespace smart_enum
 {
 
@@ -701,4 +703,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
 
 #define SMART_ENUM_GET_MACRO2(_1,_2,NAME,...) NAME
 #define SMART_ENUM(...) SMART_ENUM_GET_MACRO2(__VA_ARGS__, SMART_ENUM2, SMART_ENUM1)(__VA_ARGS__)
+
+
+
 #endif // SMART_ENUM_H
