@@ -394,6 +394,7 @@ constexpr const char* to_string(EnumType enum_value, bool *ok = nullptr)
 
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 namespace detail
 {

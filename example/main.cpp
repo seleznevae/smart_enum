@@ -3,12 +3,10 @@
 #include "smart_enum.h"
 
 SMART_ENUM(Animal, int) {
-    INITIALIZE_SMART_ENUM;
-
-    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
-    SM_ENUM_ELEM(Cat,    2,  "cat"  );
-    SM_ENUM_ELEM(Lion,   5);
-    SM_ENUM_ELEM(Horse,  10,  "hOrse");
+    SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description")
+    SM_ENUM_ELEM(Cat,    2,  "cat"  )
+    SM_ENUM_ELEM(Lion,   5)
+    SM_ENUM_ELEM(Horse,  10,  "hOrse")
 };
 
 int main()
@@ -27,13 +25,13 @@ int main()
 
 
     /* It is possible to get enum by name */
-    constexpr auto ct_pet_lion = smart_enum::to_enum<Animal>("Lion");
+    constexpr auto ct_pet_lion = Animal::from_string("Lion");
 
 
     /* get description for smart enum */
-    std::cout << "descr.: " << smart_enum::get_description(pet_dog) << std::endl;
+    std::cout << "descr.: " << pet_dog.description() << std::endl;
     //descr.: dog_description
-    std::cout << "descr.: " << smart_enum::get_description(pet_horse) << std::endl;
+    std::cout << "descr.: " << pet_horse.description() << std::endl;
     //descr.: hOrse
 
 
@@ -55,8 +53,8 @@ int main()
     //Elements in smart enum: 4
 
     /* It is possible to check if data in smart enum are valid */
-    Animal invalid;
+    Animal invalid(Animal::Cat);
     *(reinterpret_cast<int*>(&invalid)) = 6666;
-    assert(smart_enum::check(invalid) == false);
+    assert(invalid.check() == false);
 
 }
