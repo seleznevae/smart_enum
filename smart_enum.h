@@ -57,7 +57,7 @@ template <typename EnumType, int k >
 struct enum_sz_impl_class<EnumType, k, true> {
     static constexpr size_t enum_sz() { return 1 + enum_sz_impl_class<EnumType,
                                                             k + 1,
-                                                            is_specialized_for_first<EnumType:: template ClassToSpec, k + 1>::value
+                                                            is_specialized_for_first<EnumType:: template class_to_spec, k + 1>::value
                                                             >::enum_sz(); }
 };
 
@@ -69,7 +69,7 @@ struct enum_sz_impl_class<EnumType, k, false> {
 template <typename EnumType, int k>
 constexpr size_t enum_size_impl()
 {
-    return enum_sz_impl_class<EnumType, k, is_specialized_for_first<EnumType:: template ClassToSpec, k>::value >::enum_sz();
+    return enum_sz_impl_class<EnumType, k, is_specialized_for_first<EnumType:: template class_to_spec, k>::value >::enum_sz();
 }
 
 } //detail
@@ -126,7 +126,7 @@ namespace detail
                       " a smart enum");
         static constexpr T enum_cast(U value, bool *ok = nullptr)
         {
-            T result(typename T::InternHelpType{static_cast<typename T::value_t>(value)});
+            T result(typename T::intern_help_type{static_cast<typename T::value_t>(value)});
             if (ok)
                 *ok = result.is_valid();
             return result;
@@ -167,7 +167,7 @@ template <typename EnumType, int i, int k >
 struct enum_check_impl_class {
     constexpr static bool check(EnumType enum_value)
     {
-        return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+i,0>::value)
+        return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template class_to_spec<EnumType::base_value+1+i,0>::value)
                 ? true
                 : detail::enum_check_impl_class<EnumType, i + 1, enum_size<EnumType>()>::check(enum_value);
     }
@@ -194,7 +194,7 @@ template <typename EnumType, int i, int k >
 struct index_of_impl_class {
     constexpr static ssize_t index_of(EnumType enum_value)
     {
-        return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+i,0>::value)
+        return enum_value.enum_member == static_cast<typename EnumType::internal_enum_t>(EnumType::template class_to_spec<EnumType::base_value+1+i,0>::value)
                 ? i
                 : detail::index_of_impl_class<EnumType, i + 1, enum_size<EnumType>()>::index_of(enum_value);
     }
@@ -220,8 +220,8 @@ constexpr EnumType
 get_n()
 {
     static_assert(n < smart_enum::enum_size<EnumType>(), "Incorrect get argument");
-    constexpr auto tmp = static_cast<typename EnumType::internal_enum_t>(EnumType::template ClassToSpec<EnumType::base_value+1+n,0>::value);
-    return EnumType(typename EnumType::InternHelpType(tmp));
+    constexpr auto tmp = static_cast<typename EnumType::internal_enum_t>(EnumType::template class_to_spec<EnumType::base_value+1+n,0>::value);
+    return EnumType(typename EnumType::intern_help_type(tmp));
 }
 
 template <typename EnumType, size_t n>
@@ -229,7 +229,7 @@ constexpr const char*
 get_name_n()
 {
     static_assert(n < smart_enum::enum_size<EnumType>(), "Incorrect get argument");
-    return EnumType::template ClassToSpec<EnumType::base_value+1+n,0>::name();
+    return EnumType::template class_to_spec<EnumType::base_value+1+n,0>::name();
 }
 
 template <typename EnumType, size_t n>
@@ -237,7 +237,7 @@ constexpr const char*
 get_description_n()
 {
     static_assert(n < smart_enum::enum_size<EnumType>(), "Incorrect get argument");
-    return EnumType::template ClassToSpec<EnumType::base_value+1+n,0>::description();
+    return EnumType::template class_to_spec<EnumType::base_value+1+n,0>::description();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -518,18 +518,18 @@ struct CCC_base<T, __COUNTER__> {
 
   // constructor helper
   template <underl_t k>
-  struct HelperClass {
-      constexpr  HelperClass(internal_enum_t v): value(static_cast<underl_t>(v)) { }
-//      constexpr  HelperClass(const HelperClass<k> &v): value(v.value) { }
+  struct helper_class {
+      constexpr  helper_class(internal_enum_t v): value(static_cast<underl_t>(v)) { }
+//      constexpr  helper_class(const helper_class<k> &v): value(v.value) { }
       underl_t value;
       constexpr operator internal_enum_t() const { return static_cast<internal_enum_t>(value); }
-      constexpr bool operator ==(HelperClass<k> rhs) { return this->value == rhs.value; }
-      constexpr bool operator !=(HelperClass<k> rhs) { return this->value != rhs.value; }
+      constexpr bool operator ==(helper_class<k> rhs) { return this->value == rhs.value; }
+      constexpr bool operator !=(helper_class<k> rhs) { return this->value != rhs.value; }
   };
 
-  using InternHelpType = HelperClass<1>;
-  InternHelpType enum_member;
-  using BaseType = CCC_base<T, __COUNTER__ - 2>;
+  using intern_help_type = helper_class<1>;
+  intern_help_type enum_member;
+  using base_type = CCC_base<T, __COUNTER__ - 2>;
   using is_smart_enum = std::true_type;
 
   static constexpr size_t size() { return smart_enum::enum_size<T>(); }
@@ -550,54 +550,54 @@ struct CCC_base<T, __COUNTER__> {
 };
 
 template <int k, int DummyInt>
-struct SmartEnumMutualAlias;
+struct smart_enum_mutual_alias;
 
-using CCC = SmartEnumMutualAlias<__COUNTER__ - 3, 0>;
+using CCC = smart_enum_mutual_alias<__COUNTER__ - 3, 0>;
 
 
 template <int DummyInt>
-struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
-        public CCC_base<SmartEnumMutualAlias<__COUNTER__ - 5, 0>, __COUNTER__ - 6>{
+struct smart_enum_mutual_alias<__COUNTER__ - 4, DummyInt>:
+        public CCC_base<smart_enum_mutual_alias<__COUNTER__ - 5, 0>, __COUNTER__ - 6>{
 
-    using BaseClass_enum_elem0 = CCC_base<SmartEnumMutualAlias<base_value, DummyInt>, base_value>;
+    using base_class_enum_elem0 = CCC_base<smart_enum_mutual_alias<base_value, DummyInt>, base_value>;
     static constexpr underl_t AAA_counter_enum_elem0 = __COUNTER__ - 6;
-    static constexpr InternHelpType enum_elem0 = static_cast<typename BaseClass_enum_elem0::internal_enum_t>(4);
+    static constexpr intern_help_type enum_elem0 = static_cast<typename base_class_enum_elem0::internal_enum_t>(4);
     template <int, int dummy>
-    struct ClassToSpec;
+    struct class_to_spec;
     template <int dummy>
-    struct ClassToSpec<AAA_counter_enum_elem0, dummy> {
+    struct class_to_spec<AAA_counter_enum_elem0, dummy> {
         static constexpr underl_t value = static_cast<underl_t>(enum_elem0.value);
         static constexpr auto name() { return "enum_elem0_name"; }
         static constexpr auto description() { return "enum_elem0_description"; }
     };
-    constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem0 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
+    constexpr smart_enum_mutual_alias(helper_class<AAA_counter_enum_elem0 - base_value> v): base_type(static_cast<internal_enum_t>(v.value)) {}
 
-    using BaseClass_enum_elem1 = CCC_base<SmartEnumMutualAlias<base_value, DummyInt>, base_value>;
+    using base_class_enum_elem1 = CCC_base<smart_enum_mutual_alias<base_value, DummyInt>, base_value>;
     static constexpr  underl_t AAA_counter_enum_elem1 = __COUNTER__ - 6;
-    static constexpr InternHelpType enum_elem1 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(9);
+    static constexpr intern_help_type enum_elem1 = static_cast<typename base_class_enum_elem1::internal_enum_t>(9);
     template <int, int dummy>
-    struct ClassToSpec;
+    struct class_to_spec;
     template <int dummy>
-    struct ClassToSpec<AAA_counter_enum_elem1, dummy> {
+    struct class_to_spec<AAA_counter_enum_elem1, dummy> {
         static constexpr underl_t value = static_cast<underl_t>(enum_elem1.value);
         static constexpr auto name() { return "enum_elem1_name"; }
         static constexpr auto description() { return "enum_elem1_description"; }
     };
-    constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem1 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
+    constexpr smart_enum_mutual_alias(helper_class<AAA_counter_enum_elem1 - base_value> v): base_type(static_cast<internal_enum_t>(v.value)) {}
 
     //default_value
-    using BaseClass_enum_elem2 = CCC_base<SmartEnumMutualAlias<base_value - 1, DummyInt>, base_value>;
+    using base_class_enum_elem2 = CCC_base<smart_enum_mutual_alias<base_value - 1, DummyInt>, base_value>;
     static constexpr  underl_t AAA_counter_enum_elem2 = __COUNTER__ - 6;
-    static constexpr InternHelpType enum_elem2 = static_cast<typename BaseClass_enum_elem1::internal_enum_t>(ClassToSpec<AAA_counter_enum_elem2 - 1, 0>::value + 1);
+    static constexpr intern_help_type enum_elem2 = static_cast<typename base_class_enum_elem1::internal_enum_t>(class_to_spec<AAA_counter_enum_elem2 - 1, 0>::value + 1);
     template <int, int dummy>
-    struct ClassToSpec;
+    struct class_to_spec;
     template <int dummy>
-    struct ClassToSpec<AAA_counter_enum_elem2, dummy> {
+    struct class_to_spec<AAA_counter_enum_elem2, dummy> {
         static constexpr underl_t value = static_cast<underl_t>(enum_elem2.value);
         static constexpr auto name() { return "enum_elem2_name"; }
         static constexpr auto description() { return "enum_elem2_description"; }
     };
-    constexpr SmartEnumMutualAlias(HelperClass<AAA_counter_enum_elem2 - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
+    constexpr smart_enum_mutual_alias(helper_class<AAA_counter_enum_elem2 - base_value> v): base_type(static_cast<internal_enum_t>(v.value)) {}
 };
 
 
@@ -623,15 +623,15 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
       static constexpr int base_value = __COUNTER__ - 1;\
 \
       template <underl_t k>\
-      struct HelperClass {\
-          constexpr  HelperClass(internal_enum_t v): value(static_cast<underl_t>(v)) { }\
+      struct helper_class {\
+          constexpr  helper_class(internal_enum_t v): value(static_cast<underl_t>(v)) { }\
           underl_t value;\
           constexpr operator internal_enum_t() const { return static_cast<internal_enum_t>(value); }\
       };\
     \
-      using InternHelpType = HelperClass<1>;\
-      InternHelpType enum_member;\
-      using BaseType = smart_enum_base<T, __COUNTER__ - 2>; \
+      using intern_help_type = helper_class<1>;\
+      intern_help_type enum_member;\
+      using base_type = smart_enum_base<T, __COUNTER__ - 2>; \
       using is_smart_enum = std::true_type; \
     \
       static constexpr size_t size() { return smart_enum::enum_size<T>(); }\
@@ -651,13 +651,13 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>:
     };\
     \
 template <int k, int DummyInt> \
-struct SmartEnumMutualAlias;\
+struct smart_enum_mutual_alias;\
 \
-using enum_name = SmartEnumMutualAlias<__COUNTER__ - 3, 0>; \
+using enum_name = smart_enum_mutual_alias<__COUNTER__ - 3, 0>; \
 \
 template <int DummyInt> \
-struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
-        public smart_enum_base<SmartEnumMutualAlias<__COUNTER__ - 5, 0>, __COUNTER__ - 6>
+struct smart_enum_mutual_alias<__COUNTER__ - 4, DummyInt>: \
+        public smart_enum_base<smart_enum_mutual_alias<__COUNTER__ - 5, 0>, __COUNTER__ - 6>
 
 #define SMART_ENUM1_(enum_name) \
     SMART_ENUM2(enum_name, int)
@@ -666,18 +666,18 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
 
 #define SMART_ENUM_ELEM4(elem_id, elem_value, elem_name, elem_description)\
 \
-    using BaseClass_##elem_id = smart_enum_base<SmartEnumMutualAlias<base_value, DummyInt>, base_value>;\
+    using base_class_##elem_id = smart_enum_base<smart_enum_mutual_alias<base_value, DummyInt>, base_value>;\
     static constexpr underl_t counter_enum_##elem_id = __COUNTER__ - 6;\
-    static constexpr InternHelpType elem_id = static_cast<typename BaseClass_##elem_id::value_t>(elem_value);\
+    static constexpr intern_help_type elem_id = static_cast<typename base_class_##elem_id::value_t>(elem_value);\
     template <int, int dummy>\
-    struct ClassToSpec;\
+    struct class_to_spec;\
     template <int dummy>\
-    struct ClassToSpec<counter_enum_##elem_id, dummy> {\
+    struct class_to_spec<counter_enum_##elem_id, dummy> {\
         static constexpr underl_t value = static_cast<underl_t>(elem_id.value);\
         static constexpr auto name() { return elem_name ; }\
         static constexpr auto description() { return elem_description ; }\
     };\
-    constexpr SmartEnumMutualAlias(HelperClass<counter_enum_##elem_id - base_value> v): BaseType(static_cast<internal_enum_t>(v.value)) {}
+    constexpr smart_enum_mutual_alias(helper_class<counter_enum_##elem_id - base_value> v): base_type(static_cast<internal_enum_t>(v.value)) {}
 
 
 #define SMART_ENUM_ELEM3_(elem_id, elem_value, elem_name)\
@@ -693,7 +693,7 @@ struct SmartEnumMutualAlias<__COUNTER__ - 4, DummyInt>: \
     SMART_ENUM_ELEM2_(elem_id, elem_value)
 
 #define SMART_ENUM_ELEM1_(elem_id)\
-    SMART_ENUM_ELEM2(elem_id, (ClassToSpec<counter_enum_##elem_id - 1, 0>::value + 1))
+    SMART_ENUM_ELEM2(elem_id, (class_to_spec<counter_enum_##elem_id - 1, 0>::value + 1))
 
 #define SMART_ENUM_ELEM1(elem_id)\
     SMART_ENUM_ELEM1_(elem_id)
