@@ -59,6 +59,11 @@ int main()
         std::cout << name << " ";
     std::cout << std::endl;
 
+    /* getting all values for smart enum */
+    for (const auto &enum_item : Animal::values())
+        std::cout << enum_item.to_string() << " ";
+    std::cout << std::endl;
+
     /* get number of declared elements in smart enum */
     std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
     //Elements in smart enum: 4

@@ -39,11 +39,13 @@ SMART_ENUM(Animal, int) {
     SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description");
     SM_ENUM_ELEM(Cat,    2,  "cat"  );
     SM_ENUM_ELEM(Lion,   5);
-    SM_ENUM_ELEM(Horse,  10,  "hOrse");
+    SM_ENUM_ELEM(Horse);
 };
 ```
 
-For each enum constant string representation and string description is generated. When macro with 2 arguments is used ( SM_ENUM_ELEM(Lion,   5); ) string representation and description will match enum constant name. If you want to specify custom string representation and string description macro with 3 or 4 arguments should be used.
+For each enum constant string representation and string description is generated. When macro with 1 or 2 arguments is used
+( like SM_ENUM_ELEM(Lion,   5) and SM_ENUM_ELEM(Horse) ) string representation and description will match enum constant name.
+If you want to specify custom string representation and string description macro with 3 or 4 arguments should be used.
 
 Definitions of variables:
 ```c++
@@ -87,6 +89,30 @@ It is possible to get information about number of elements declared in smart enu
 ```c++
 std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
 //Elements in smart enum: 4
+```
+
+It is possible to get all values, names and descriptions of smart enum:
+```c++
+std::cout << "smart enum names: ";
+for (const auto &enum_item : Animal::values())
+    std::cout << enum_item.to_string() << " ";
+std::cout << std::endl;
+//smart enum names: dog cat Lion Horse
+
+std::cout << "smart enum names: ";
+for (const auto &name : Animal::names())
+    std::cout << name << " ";
+std::cout << std::endl;
+//smart enum names: dog cat Lion Horse
+
+std::cout << "smart enum descriptions: ";
+for (const auto &name : Animal::descriptions())
+    std::cout << name << " ";
+std::cout << std::endl;
+//smart enum descriptions: dog_description cat Lion Horse
+
+
+
 ```
 
 It is possible to check if smart enum value is valid:
