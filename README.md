@@ -89,7 +89,7 @@ std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
 //Elements in smart enum: 4
 ```
 
-It is possible to get information about number of elements declared in smart enum:
+It is possible to check if smart enum value is valid:
 ```c++
 Animal invalid;
 *(reinterpret_cast<int*>(&invalid)) = 6666;
