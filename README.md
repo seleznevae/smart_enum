@@ -23,6 +23,11 @@ DECLARE_ENUM(Animal, Animal::Dog, Animal::Cat, Animal::Lion, Animal::Horse);
 ```
 This code violates **DRY** (don't repeat yourself) principle. The aim of **smart enum** library is to provide a user with macros that can be used in enum declaration and the user will not need to repeat enum elements.
 
+## Highlights
+
+1. Smart enums can be declared in namespaces and classes.
+2. Smart enum to and from string conversions.
+
 
 ## Examples
 
@@ -37,6 +42,9 @@ SMART_ENUM(Animal, int) {
     SM_ENUM_ELEM(Horse,  10,  "hOrse");
 };
 ```
+
+For each enum constant string representation and string description is generated. When macro with 2 arguments is used ( SM_ENUM_ELEM(Lion,   5); ) string representation and description will match enum constant name. If you want to specify custom string representation and string description macro with 3 or 4 arguments should be used.
+
 Definitions of variables:
 ```c++
 Animal pet_cat   ={Animal::Cat};
@@ -87,5 +95,10 @@ Animal invalid;
 *(reinterpret_cast<int*>(&invalid)) = 6666;
 assert(invalid.is_valid() == false);
 ```
+
+## Installation
+
+Include smart_enum.h in your source code.
+
 ## License
 The MIT license
