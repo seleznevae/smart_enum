@@ -6,7 +6,8 @@ SMART_ENUM(Animal, int) {
     SM_ENUM_ELEM(Dog,    1,  "dog"  , "dog_description")
     SM_ENUM_ELEM(Cat,    2,  "cat"  )
     SM_ENUM_ELEM(Lion,   5)
-    SM_ENUM_ELEM(Horse,  10,  "hOrse")
+    SM_ENUM_ELEM(Horse)
+
 };
 
 int main()
@@ -47,6 +48,16 @@ int main()
             //do_something
             break;
     }
+
+    /* getting all names for smart enum */
+    for (const auto &name : Animal::names())
+        std::cout << name << " ";
+    std::cout << std::endl;
+
+    /* getting all descriptions for smart enum */
+    for (const auto &name : Animal::descriptions())
+        std::cout << name << " ";
+    std::cout << std::endl;
 
     /* get number of declared elements in smart enum */
     std::cout << "Elements in smart enum: " << Animal::size() << std::endl;
